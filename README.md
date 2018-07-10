@@ -20,6 +20,9 @@
   - Gi atomene tilfeldige initielle hastigheter
   - 2 x 3N arrays for både posisjon og hastighet
 
+  - Gjør flere simuleringer og øk antall atomer gradvis. Rapporter om tidsbruk for simuleringene.
+  - Innfør cut-off, og sammenlign igjen tidsbruken
+
 7. Mål energi for f.eks. 512 atomer
 
 8. Implementér forskjellige integrasjonsmetoder (f.eks Euler, Euler-Cromer og Vel.Verlet), og sammenlign disse. Finn maksimalt tidssteg som fortsatt bevarer energi (dette kan også gjøres for 2-atom systemet).
