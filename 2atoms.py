@@ -40,17 +40,21 @@ def simulate(T, dt):
     nt = int(T/dt) + 1   # Number of timesteps
 
     r = np.zeros((nt, 6))
-    r[0] = np.random.uniform(0, 5, size=6)
+    #r[0] = np.random.uniform(0, 5, size=6)
+    r[0] = np.array([0, 0, 0, 2**(1/6), 1, 2**(1/6)])
 
     v = np.zeros((nt, 6))
-    v[0] = np.random.uniform(0, 1, size=6)
+    #v[0] = np.random.uniform(0, 1, size=6)
 
     infile = open("in.xyz", 'w')
 
     # Time integration, Euler-Cromer temporarily
     for i in range(nt-1):
 
-        F = LJ_force(r[i, :3] - r[i, 3:])
+        d_vec = r[i, :3] - r[i, 3:]
+        d = np.sqrt(np.sum((d_vec)**2))
+
+        F = LJ_force(d)*d_vec/d
 
         # Forces between the two atoms are the same, but with opposite signs
         F = np.concatenate((F, -F))
@@ -63,11 +67,10 @@ def simulate(T, dt):
         for j in range(2):
             infile.write(str(r[i, 3*j:3*j +3])[1:-1] + "\n")
 
-        #infile.write("\n")
 
     infile.close()
 
 
 if __name__ == "__main__":
     #plot_LJ()
-    simulate(4, 0.1)
+    simulate(10, 0.05)
