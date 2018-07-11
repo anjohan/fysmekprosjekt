@@ -9,20 +9,39 @@ in this file will be imported.
 """
 
 def LJ_pot(r, epsilon=1, sigma=1):
-    # Function for computing the potential of the Lennard-Jones Potential
+    """Function for computing the potential of the Lennard-Jones Potential.
+
+    Args:
+        r: float or array of floats with distances between atoms.
+        epsilon: Characteristic energy, set to 1 as default.
+        sigma: Characteristic length, set to 1 as default.
+
+    Returns:
+        The computed potential between the atoms given as input.
+    """
 
     return 4*epsilon*((sigma/r)**12 - (sigma/r)**6)
 
 def LJ_force(r, epsilon=1, sigma=1):
-    # Function for computing the forces of the Lennard-Jones Potential
+    """Function for computing the forces of the Lennard-Jones Potential.
+
+    Args:
+        r: float or array of floats with distances between atoms.
+        epsilon: Characteristic energy, set to 1 as default.
+        sigma: Characteristic length, set to 1 as default.
+
+    Returns:
+        The computed forces between the atoms given as input.
+    """
 
     return 24*epsilon/r*(2*(sigma/r)**12 - (sigma/r)**6)
 
 
 def plot_LJ():
-    # Simple function for plotting the curves of the LJ potential and forces.
-    # Simply for showing the shape of the curves, the r-array is a set of arbitrary r-values in an
-    # interval near y = 0.
+    """ Simple function for plotting the curves of the LJ potential and forces.
+    Simply for showing the shape of the curves, the r-array is a set of arbitrary r-values in an
+    interval near y = 0.
+    """
 
     r = np.linspace(0.2, 3, 1001)
 
@@ -42,13 +61,36 @@ def plot_LJ():
 
 
 
-def intergrator(r, v, dt, m, intg):
+def simulate(r0, v0, m, T, dt, intg, wrt_file = False):
 
-    nt = v.shape[0]
+    """ A function for simulating the 2-atom model with an integration method of choice.
 
-    infile = open("in.xyz", 'w')
+    Args:
+        r0: Array with the initial condition for positions.
+        v0: Array with the initial condition for velocities.
+        m: mass of the atoms
+        T: The end time where the integration will stop.
+        dt: Size of the time step.
+        intg: String telling what method to use; either 'Euler', 'EulerCromer' og 'VelVerlet'.
+        wrt_file: Whether or not to write the position vector to an .xyz file. Default set to 'False'.
 
-    # Time integration, Euler-Cromer temporarily
+    returns:
+        r: Array for posisions.
+        v: Array for velocities.
+        t: Array for the discrete time points.
+    """
+
+    nt = int(T/dt) + 1   # Number of timesteps
+    t = np.linspace(0, T, nt)
+
+    r = np.zeros((nt, 6))
+    r[0] = np.array(r0)
+
+    v = np.zeros((nt, 6))
+    v[0] = np.array(v0)
+
+
+    # Time integration
     for i in range(nt-1):
 
         d_vec = r[i, :3] - r[i, 3:]
@@ -85,35 +127,26 @@ def intergrator(r, v, dt, m, intg):
             print('Error: The variable intg must either be "Euler", "EulerCromer" or "VelVerlet".\nExiting...')
             sys.exit(0)
 
-
-        infile.write("2\n\n")
-        for j in range(2):
-            infile.write(str(r[i, 3*j:3*j +3])[1:-1] + "\n")
-
-    infile.close()
-
-    return r, v
-
-
-
-def simulate(m, T, dt, intg):
-
-    nt = int(T/dt) + 1   # Number of timesteps
-    t = np.linspace(0, T, nt)
-
-    r = np.zeros((nt, 6))
-    r[0] = np.array([0, 0, 0, 2**(1/6), 1, 2**(1/6)])
-
-    v = np.zeros((nt, 6))
-
-    infile = open("in.xyz", 'w')
-
-    r, v = intergrator(r, v, dt, m, intg)
+    if wrt_file:
+        write_xyz(r)
 
     return r, v, t
 
 
 def Energy(r, v, t, m, plot = True):
+    """ Calculate both the kinetic and potential energies of the 2-atom model
+
+    Args:
+        r: Array for positions.
+        v: Array for velocities.
+        t: Array for the discrete time points.
+        m: Mass of the atoms.
+        plot: Boolean expression, whether to plot the results or not, 'True' as default.
+
+    Returns:
+        KinEng: Array for the kinetic energy at each timestep.
+        PotEng: Array for the potential energy at each timestep.
+    """
 
     nt = v.shape[0]
     KinEng = np.zeros(nt)
@@ -144,8 +177,21 @@ def Energy(r, v, t, m, plot = True):
 
     return KinEng, PotEng
 
+def write_xyz(r):
+    """Write positions to .xyz file for visualization in external program (i.e. Ovito).
 
+    Args:
+        r: Array with positions for all atoms at all timesteps
+    """
 
-if __name__ == "__main__":
-    #plot_LJ()
-    #simulate(1, 10, 0.05)
+    nt = r.shape[0]
+    N = int(r.shape[1]/3)
+
+    infile = open("in.xyz", 'w')
+
+    for i in range(nt):
+        infile.write("%i\n\n" %(N))
+        for j in range(N):
+            infile.write(str(r[i, 3*j:3*j +3])[1:-1] + "\n")
+
+    infile.close()

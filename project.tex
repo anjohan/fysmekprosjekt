@@ -154,7 +154,52 @@
 \pagestyle{fancy}
 \setcounter{page}{1}
 
-Blabla.
+\section*{\underline{Part 1: 2-atom model}}
+
+\textbf{Bare legger en liten mal her på oppgavene jeg har programmert så langt. Veldig overfladisk oppgavetekst, kan og bør endres underveis.}
+
+\subsection*{a)}
+
+Plot the LJ-potential curve. What does the different terms in the potential do?}
+
+\subsection*{b)}
+
+Find the force corresponding to the potential from a), and plot the result. For what distance $r$ is this force 0? Is this force conservative? \textit{What's different with this force
+compared to say Newton's Law of gravitation?}
+
+\subsection*{c)}
+
+Say we place one atom at $\vec{r_1} = [0, 0, 0]$ and the other at $\vec{r_2} = [1.5, 0, 0]$, with no initial velocities. Describe qualitaively what the motions of the atoms will look like. Support your arguments with the LJ potential curve.
+
+If we place the second atom at $\vec{r_2} = [0.95, 0, 0]$ instead, what do you expect then? Explain by again using the potential curve from task a). 
+
+\subsection*{d)}
+
+Develop a code to simulate a system of two atoms with the LJ-forces being the only ones acting. Use the Euler-Cromer integration method (?). Simulate the system with the initial conditions
+(both cases) from task c), and plot the distance between the atoms $r$ as a function of time. What do you see?
+
+\subsection*{e) (optional)}
+
+Download a visualization tool (i.e. Ovito), and write a function that writes the positions of the atoms at every time step to a xyz.-file. Load this file into \textit{Ovito} and describe
+what you see. Does this fit well with the assumptions you made in task c) ?
+
+\subsection*{f)}
+
+Implement different integration methods so that you have the Euler, Euler-Cromer and Velocity-Verlet methods available for your simulations. Run simulations with the same initial conditions
+as in the first case in task c) ($\vec{r_1} = [0, 0, 0]$, $\vec{r_2} = [1.5, 0, 0]$) for all three methods, and plot the mechanical energy for all three with $\Delta t = 0.01$. Compare 
+the results for all three methods. How does these methods perform in terms of energy conservation?
+
+\subsection{g) (I tvil om denne skal med)}
+
+Run simulations for all three methods implemented in the previous task, and find the an approximation to the largest time step ($\Delta t$) required to keep the integration from exploding.
+Whats the difference between these methods, and why does some of them perform better than others? 
+
+
+
+\section*{\underline{Part 2: N-atom model}}
+
+
+\section*{\underline{Part 3: Let's do some science!}}
 
 \nocite{*}
 \printbibliography{}
