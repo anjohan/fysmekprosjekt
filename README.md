@@ -7,8 +7,11 @@
 2. Finn kraften F ved derivasjon av potensialet, og plot resultatet. Finn ved hvilken avstand r/sigma kraften er 0.
 
 3. Simuler systemet for 2 atomer - skriv xyz-fil, og visualisér med Ovito. Lagre data for alle tidssteg i et 2*3 x nt array, nt = antall tidssteg.
-  - Plassér et atom i r1 = [0, 0, 0], og det andre i feks r2 = [2^(1/6), 1, 2^(1/6)] (ved en avstand slik at atomene er fanget i "potensialbrønnen"). Hvilken bevegelse forventes, forklar ved hjelp av plottet for potensialet for LJ. Simuler for f.eks. dt = 0.05. Plot avstand som funksjon av tid (kanskje også kin/pot energi?).
-  -   Implementer forskjellige integrasjonsmetoder, sammenlign plottene for avstand og energi for en gitt dt (ideelt et tidssteg hvor kanskje Euler-Cromer og Vel.Verlet holder oscillasjonene, men hvor Euler sliter).
+  - Plassér et atom i r1 = [0, 0, 0], og det andre i feks r2 = [1.5, 0, 0] (ved en avstand slik at atomene er fanget i "potensialbrønnen"), og v1 = v2 = [0,0,0]. Hvilken bevegelse forventes, forklar ved hjelp av plottet for potensialet for LJ. Simuler for f.eks. dt = 0.05. Plot både avstand og mekanisk energi som funksjon av tid. I energiplottet vil man sannsynligvis få "spikes". Forklar hvorfor disse forekommer, størrelsen (betydningen) av dem, og hvordan man kan fjerne/redusere disse.
+  - Plassér nå atom2 i r2 = [0.95, 0, 0] i stedet. Hva forventes av bevegelse nå? Er energien fortsatt bevart? Begrunn igjen ut fra potensialkurven. Plot de samme plottene.
+
+
+  -   Implementer forskjellige integrasjonsmetoder, sammenlign plottene for avstand og energi for en gitt dt (ideelt et tidssteg hvor kanskje Euler-Cromer og Vel.Verlet holder oscillasjonene, men hvor Euler sliter). Plot den mekaniske energien som funksjon av tid, kommentér i hvilken grad energien er bevart for de forskjellige metodene, og i hvilke faser av bevegelsen er dette "problematisk" (den mekaniske energien får gjerne noen hopp rundt r = 1 hvor kreftene blir relativt store).
   - Eksperimentér med forskjellige tidssteg for metodene, finn grensene for hver hvor energi fortsatt er bevart.
 
 4. Gjør det samme, men med en metode som kun lagrer to tidssteg om gangen.
