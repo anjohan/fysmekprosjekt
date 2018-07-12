@@ -169,6 +169,7 @@ where \(r\) is the distance between two atoms, \(r=\norm{\vec{r}_i-\vec{r}_j}\).
     \item Plot the potential with \(\varepsilon=1\) and \(\sigma=1\).
     \item The behaviour of \(U(r)\) is vastly different for \(r \ll \sigma\) and \(r \gg \sigma\). Which term in the potential,~\vref{eq:lj}, dominates in each case and what is the effect?
     \item Find and characterise the equilibrium points of the potential.
+    \item Describe qualitatively the motion of two atoms which start at rest separated by a distance of \(\num{1.5}\sigma\).
 \end{enumerate}
 
 \subsection{Forces and equations of motion}
@@ -176,12 +177,29 @@ where \(r\) is the distance between two atoms, \(r=\norm{\vec{r}_i-\vec{r}_j}\).
     \item Find the force on atom \(i\) at position \(\vec{r}_i\) from atom \(j\) at position \(\vec{r}_j\).
     \item Show that the equation of motion for atom \(i\) is
     \begin{equation}
-        \dv[2]{\vec{r}_i}{t} = \frac{24\varepsilon}{m} \sum_{j \neq i} \qty(2\qty(\frac{\sigma}{\norm{\vec{r}_j-\vec{r}_i}})^{12}-\qty(\frac{\sigma}{\norm{\vec{r}_j-\vec{r}_i}})^6)\frac{\vec{r_j}-\vec{r}_i}{\norm{\vec{r}_j-\vec{r}_i}}.
+        \dv[2]{\vec{r}_i}{t} = \frac{24\varepsilon}{m} \sum_{j \neq i} \qty(2\qty(\frac{\sigma}{\norm{\vec{r}_j-\vec{r}_i}})^{12}-\qty(\frac{\sigma}{\norm{\vec{r}_j-\vec{r}_i}})^6)\frac{\vec{r}_j-\vec{r}_i}{\norm{\vec{r}_j-\vec{r}_i}^2}.
     \end{equation}
 \end{enumerate}
 
 \subsection{Units}
 As you may remember from MAT-INF1100, numerical accuracy is reduced when computing with values which are many orders of magnitude apart. This is often an issue in physics, and molecular dynamics is no exception. For example, the mass of argon i smaller than \(10^{-25}\ \si{\kg}\), while typical length scales are on the order of nanometres, \(10^{-9}\ \si{\m}\).
+
+The remedy is to change units so that most quantities are close to \(1\). From \vref{eq:lj} it is clear that \(\sigma\) and \(\varepsilon\) are the typical scale for length and energy.
+
+\begin{enumerate}[label=\roman*.]
+    \item Introduce the scaled coordinates \(\vec{r}_i\,'=\vec{r}_i/\sigma\) and show that the equation of motion can be rewritten in terms of these coordinates as
+    \begin{equation}
+        \dv[2]{\vec{r}_i\,'}{{t'}} = 24 \sum_{j \neq i} \qty(2\norm{\vec{r}_j\,'-\vec{r}_i\,'}^{-12}-\norm{\vec{r}_j\,'-\vec{r}_i\,'}^{-6})\frac{\vec{r}_j\,'-\vec{r}_i\,'}{\norm{\vec{r}_j\,'-\vec{r}_i\,'}^2}.
+    \end{equation}
+\item What is the characteristic time scale \(t'\), and what is its value for argon, which has \(\sigma=\SI{3.405}{\angstrom}\) (\(\SI{1}{\angstrom}=\SI{1e-10}{\m}\)) and \(\varepsilon=\SI{1.0318e-2}{\eV}\) (\(\SI{1}{\eV}=\SI{1.602e-19}{\J}\))?
+\end{enumerate}
+
+
+
+
+
+
+
 
 
 
