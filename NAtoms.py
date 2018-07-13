@@ -33,8 +33,10 @@ def LJ_force(r, epsilon=1, sigma=1):
     Returns:
         The computed forces between the atoms given as input.
     """
-
-    return 24*epsilon/r*(2*(sigma/r)**12 - (sigma/r)**6)
+    if r < 3.0:
+        return 24*epsilon/r*(2*(sigma/r)**12 - (sigma/r)**6)
+    else:
+        return 0
 
 
 def plot_LJ():
@@ -94,7 +96,7 @@ def simulate(r0, v0, m, T, dt, intg, wrt_file = False):
     for i in range(nt-1):
 
         if intg == 'VelVerlet' and i != 0:
-            a = F_next/m
+            a = a_next
 
         else:
 
@@ -126,7 +128,7 @@ def simulate(r0, v0, m, T, dt, intg, wrt_file = False):
 
             for j in range(N):
                 for k in range(j+1, N):
-                    d_vec = r[i, 3*j: 3*j+3] - r[i, 3*k: 3*k+3]
+                    d_vec = r[i+1, 3*j: 3*j+3] - r[i+1, 3*k: 3*k+3]
                     d = np.sqrt(np.sum((d_vec)**2))
 
                     F_jk = LJ_force(d)*d_vec/d

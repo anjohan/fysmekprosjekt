@@ -242,7 +242,7 @@ Implement different integration methods so that you have the Euler, Euler-Cromer
 as in the first case in task c) ($\vec{r_1} = [0, 0, 0]$, $\vec{r_2} = [1.5, 0, 0]$) for all three methods, and plot the mechanical energy for all three with $\Delta t = 0.01$. Compare
 the results for all three methods. How does these methods perform in terms of energy conservation?
 
-\subsection{g) (I tvil om denne skal med)}
+\subsection*{g) (I tvil om denne skal med)}
 
 Run simulations for all three methods implemented in the previous task, and find the an approximation to the largest time step ($\Delta t$) required to keep the integration from exploding.
 Whats the difference between these methods, and why does some of them perform better than others?
@@ -250,6 +250,44 @@ Whats the difference between these methods, and why does some of them perform be
 
 
 \section*{\underline{Part 2: N-atom model}}
+
+\subsection*{h)}
+
+Generalize the program you wrote in the previous part for any number of atoms, $N$. Computing time increases drastically with system size, so some precautions should be made:
+
+\begin{itemize}
+  \item Pair-wise forces: The LJ-potential describes forces \textit{between} atoms, meaning that the forces acting on atom $i$ from atom $j$ is the same as the forces acting on atom $j$ 
+  from atom $i$, just with opposite signs. Realizing this can cut the computations in half, in contrary to computing the same force twice. 
+  \item Hopefully when you plotting the LJ-potential earlier you saw that the forces converge towards 0 as $r \rightarrow \infty$. This means that atoms that are far away from each other 
+  share little to none influence, and are basically neglectable. Computing the forces between these atoms are hence a waste of computing power, and can be ignored by implementing a cut-off
+  length - If the atoms are further away than this length, the forces are set to 0. For the LJ-potential this cut-off is usually set to 3.0 (LJ units).
+  \textbf{Note:} The LJ-force at $r = 3.0\sigma$ is NOT exactly 0, meaning that with the cut-off implemented, the potential curve will do a small 'jump' at this point (messing up the 
+  conservation of energy, etc).
+  A solution to this is to simply shift the whole potential curve by the value at the cut-off point, leading to a smooth curve (no jumps) with 0 forces at cut-off. 
+  \item Due to memory restrictions it may be a bad idea to keep positions and velocities for all time steps stored in arrays. MD-simulations typically need large system sizes ($N$) 
+  and small time steps ($dt$) to create decent results, potentially leading to really huge matrices. For the simulations we'll do in this project we \textit{probably} won't need blue-screen
+  inducing matrices (depending on the memory resources you have available), but if you're going to experiment further with different time steps and system sizes this \textit{may} become
+  a problem. A solution here is to just keep positions and velocities for two time steps at a time, and write out the data to a text-file instead. This way there is no memory constraints,
+  only on your patience waiting for the simulations to complete.
+  
+\end{itemize}
+
+Reproduce the results from the two-atom case with the generalized code for verification. 
+
+\subsection*{i)}
+
+Start with a 4-atom system. Place the atoms so that $\vec{r_1} = 2\vec{i}$, $\vec{r_2} = -2\vec{i}$, $\vec{r_3} = 2\vec{j}$ and $\vec{r_4} = -2\vec{j}$. Compare with the experiment with two atoms
+from earlier. What did you expect to happen \textit{before} you ran the simulation, and what did you actually see? Visualize with Ovoti, and explain the results.
+
+\subsection*{j)}
+
+Do the same again, but now perturb \textit{one} of the atoms, giving them a small positional component (say 0.1) in one of the directions where it originally was 0. Visualize the results,
+and describe the effect of this small perturbation. 
+
+\subsection*{k)} 
+
+
+
 
 
 \section*{\underline{Part 3: Let's do some science!}}

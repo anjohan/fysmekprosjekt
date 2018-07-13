@@ -69,7 +69,7 @@ def test():
     m = 1   # Mass set to 1 for simplicity
 
     #r0 = np.array([0, 0, 0, 2**(1/6), 1, 2**(1/6)])
-    r0 = np.array([0, 0, 0, 2**(1/6), 0, 0])
+    r0 = np.array([0, 0, 0, 1.5, 0, 0])
     v0 = np.array([0, 0, 0, 0, 0, 0])
 
     #d_abs = np.sqrt((np.sum((r[:, :3] - r[:, 3:])**2, axis=1)))
@@ -77,11 +77,11 @@ def test():
     #plt.plot(t, d_abs)
     #plt.show()
 
-    r, v, t = simulate(r0, v0, m, 10, 0.01, 'EulerCromer', wrt_file=True)
+    r, v, t = simulate(r0, v0, m, 10, 0.01, 'VelVerlet', wrt_file=True)
 
 
 if __name__ == "__main__":
-    #test()
+    test()
     #task_ab()
     #task_cd()
-    compare_methods()
+    #compare_methods()
