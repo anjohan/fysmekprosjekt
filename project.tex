@@ -277,15 +277,42 @@ Reproduce the results from the two-atom case with the generalized code for verif
 \subsection*{i)}
 
 Start with a 4-atom system. Place the atoms so that $\vec{r_1} = 2\vec{i}$, $\vec{r_2} = -2\vec{i}$, $\vec{r_3} = 2\vec{j}$ and $\vec{r_4} = -2\vec{j}$. Compare with the experiment with two atoms
-from earlier. What did you expect to happen \textit{before} you ran the simulation, and what did you actually see? Visualize with Ovoti, and explain the results.
+from earlier. What do you see? Visualize with Ovito, and explain the results. Calculate the potential and kinetic energy of the system, and comment on the conservation of energy.
 
 \subsection*{j)}
 
 Do the same again, but now perturb \textit{one} of the atoms, giving them a small positional component (say 0.1) in one of the directions where it originally was 0. Visualize the results,
-and describe the effect of this small perturbation. 
+and describe the effect of this small perturbation. Comment again on the energy of the system. 
 
 \subsection*{k)} 
 
+If you have played around with different $N$s and $dt$s you've probably seen that this system isn't very stable - the atoms start spreading around outside the initial box, and some might really gain speed and 
+aim for infinity and beyond (especially if the initial positions are generated randomly). This is mainly due to two parts still missing: good initialization and boundary conditions on
+the simulation box boundaries. We will first implement the former:
+
+It might seem like a reasonable idea to initialize the atoms uniformly in the simulation box by splitting the simulation box into $N$ smaller, equally sized boxes (called \textit{unit boxes}), and 
+putting one atom at the center of each box (and to some extent this is reasonable). It can be shown however that the equilibrium state of a system of atoms interacting with a LJ-potential
+doesn't prefer this simple cubic structure, but rather a face-centered cubic structure (fcc). Instead of having just one atom in each unit box, we instead have \textit{four}, which
+practically means that the number of atoms in the system should be a multiple of 4. In this structure, one atom is attached to the one of the corners of the unit box, and the other three are
+put at the center of the three walls connected to this first atom (see drawing).
+
+\textbf{Put drawing here}
+
+Write a function that generates this structure - visualize with a small system to see that the implementation is working as intended. 
+
+\subsection*{l)}
+
+The main reason that atoms occasionally escapes the system is the obvious one - we are allowing them to. In a MD-simulation we're for the most part simulating the behaviour of a \textit{tiny}
+part of a much larger material, so the box we're simulating will in reality be surrounded by other similar boxes. So far we've not implemented anything telling the atoms what happens when they cross
+the boundaries of the simulation box, but we have a few options available:
+
+\begin{itemize}
+ \item Reflective boundaries: A simple, but less realistic method is to simply reflect the atoms moving out of the box back in. This simulates a hard wall situated at the boundaries,
+ and while it does conserve energy, it does a poor job of keeping the fcc structure of the system.
+ \item Periodic boundary conditions: A more realistic option, where instead of the atoms being reflected back, they appear on the other side of the system.
+\end{itemize}
+
+\textbf{BlaBla om at det også må regnes ut krefter på tvers av grensene.}
 
 
 
