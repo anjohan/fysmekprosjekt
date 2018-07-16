@@ -69,7 +69,7 @@
 
 %\setcounter{secnumdepth}{4}
 \renewcommand{\thesection}{Part \arabic{section}}
-\renewcommand{\thesubsection}{\alph{subsection})}
+\renewcommand{\thesubsection}{\arabic{section}\alph{subsection})}
 \renewcommand{\thesubsubsection}{\arabic{section}\alph{subsection}\roman{subsubsection})}
 \setlength{\parindent}{0cm}
 \setlength{\parskip}{1em}
@@ -155,6 +155,13 @@
 \pagestyle{fancy}
 \setcounter{page}{1}
 
+
+%  _       _                 _       _         _
+% (_)_ __ | |_ _ __ ___   __| |_   _| | _____ (_) ___  _ __
+% | | '_ \| __| '__/ _ \ / _` | | | | |/ / __|| |/ _ \| '_ \
+% | | | | | |_| | | (_) | (_| | |_| |   <\__ \| | (_) | | | |
+% |_|_| |_|\__|_|  \___/ \__,_|\__,_|_|\_\___// |\___/|_| |_|
+%                                           |__/
 \section{Introduction}
 In this project you will learn the basics of a simulation technique called molecular dynamics (MD). Molecular dynamics is a method actively used in research here at the Department of Physics, yet its basic principle can be understood and implemented with the background of a first-year physics student.
 
@@ -164,12 +171,12 @@ Molecular dynamics is based on the assumption that even atoms move according to 
 \end{equation}
 where \(r\) is the distance between two atoms, \(r=\norm{\vec{r}_i-\vec{r}_j}\). \(\sigma\) and \(\varepsilon\) are a parameters which determine which chemical compound is modelled. This potential is a good approximation for noble gases.
 
-\subsection{Understanding the potential}
+\subsection{Understanding the potential}\label{subsec:understanding}
 \begin{enumerate}[label=\roman*.]
-    \item Plot the potential with \(\varepsilon=1\) and \(\sigma=1\).
+    \item Plot the potential as a function of \(r\) with \(\varepsilon=1\) and \(\sigma=1\).
     \item The behaviour of \(U(r)\) is vastly different for \(r \ll \sigma\) and \(r \gg \sigma\). Which term in the potential,~\vref{eq:lj}, dominates in each case and what is the effect?
     \item Find and characterise the equilibrium points of the potential.
-    \item Describe qualitatively the motion of two atoms which start at rest separated by a distance of \(\num{1.5}\sigma\).
+    \item Describe qualitatively the motion of two atoms which start at rest separated by a distance of \(\num{1.5}\sigma\). Explain (hint: use the graph of the potential).
 \end{enumerate}
 
 \subsection{Forces and equations of motion}
@@ -182,20 +189,108 @@ where \(r\) is the distance between two atoms, \(r=\norm{\vec{r}_i-\vec{r}_j}\).
 \end{enumerate}
 
 \subsection{Units}
-As you may remember from MAT-INF1100, numerical accuracy is reduced when computing with values which are many orders of magnitude apart. This is often an issue in physics, and molecular dynamics is no exception. For example, the mass of argon i smaller than \(10^{-25}\ \si{\kg}\), while typical length scales are on the order of nanometres, \(10^{-9}\ \si{\m}\).
+As you may remember from MAT-INF1100, numerical accuracy is reduced when computing with values which are many orders of magnitude apart. This is often an issue in physics, and molecular dynamics is no exception. For example, the mass of argon is smaller than \(10^{-25}\ \si{\kg}\), while typical length scales are on the order of nanometres, \(10^{-9}\ \si{\m}\).
 
-The remedy is to change units so that most quantities are close to \(1\). From \vref{eq:lj} it is clear that \(\sigma\) and \(\varepsilon\) are the typical scale for length and energy.
+The remedy is to change units so that most quantities are close to \(1\). From~\vref{eq:lj} it is clear that \(\sigma\) and \(\varepsilon\) are the typical scale for length and energy.
 
 \begin{enumerate}[label=\roman*.]
     \item Introduce the scaled coordinates \(\vec{r}_i\,'=\vec{r}_i/\sigma\) and show that the equation of motion can be rewritten in terms of these coordinates as
     \begin{equation}
-        \dv[2]{\vec{r}_i\,'}{{t'}} = 24 \sum_{j \neq i} \qty(2\norm{\vec{r}_j\,'-\vec{r}_i\,'}^{-12}-\norm{\vec{r}_j\,'-\vec{r}_i\,'}^{-6})\frac{\vec{r}_j\,'-\vec{r}_i\,'}{\norm{\vec{r}_j\,'-\vec{r}_i\,'}^2}
+        \dv[2]{\vec{r}_i\,'}{{t'}} = 24 \sum_{j \neq i} \qty(2\norm{\vec{r}_j\,'-\vec{r}_i\,'}^{-12}-\norm{\vec{r}_j\,'-\vec{r}_i\,'}^{-6})\frac{\vec{r}_j\,'-\vec{r}_i\,'}{\norm{\vec{r}_j\,'-\vec{r}_i\,'}^2},\label{eq:undim}
     \end{equation}
-    for a suitable choice of \(t'\).
-    \item What is the characteristic time scale \(t'\), and what is its value for argon, which has \(\sigma=\SI{3.405}{\angstrom}\) (\(\SI{1}{\angstrom}=\SI{1e-10}{\m}\)), \(m = \SI{39.95}{\atomicmassunit}\) (\(\SI{1}{\atomicmassunit} = \SI{1.66e-27}{\kg}\)) and \(\varepsilon=\SI{1.0318e-2}{\eV}\) (\(\SI{1}{\eV}=\SI{1.602e-19}{\J}\))?
+    where \(t'=t/\tau\) for a suitable choice of \(\tau\).
+    \item What is the characteristic time scale \(\tau\), and what is its value for argon, which has \(\sigma=\SI{3.405}{\angstrom}\) (\(\SI{1}{\angstrom}=\SI{1e-10}{\m}\)), \(m = \SI{39.95}{\atomicmassunit}\) (\(\SI{1}{\atomicmassunit} = \SI{1.66e-27}{\kg}\)) and \(\varepsilon=\SI{1.0318e-2}{\eV}\) (\(\SI{1}{\eV}=\SI{1.602e-19}{\J}\))?
 \end{enumerate}
 
 
+%  ____          _
+% |___ \    __ _| |_ ___  _ __ ___   ___ _ __
+%   __) |  / _` | __/ _ \| '_ ` _ \ / _ \ '__|
+%  / __/  | (_| | || (_) | | | | | |  __/ |
+% |_____|  \__,_|\__\___/|_| |_| |_|\___|_|
+
+\section{Two-atom simulations}
+
+\subsection{Implementation}
+\begin{enumerate}[label=\roman*.]
+    \item Write a function which solves~\vref{eq:undim} for two atoms and finds the positions and velocities of the atoms as a function of time.
+\end{enumerate}
+
+\subsection{Motion}\label{subsec:2motion}
+\begin{enumerate}[label=\roman*.]
+    \item Simulate the motion of two atoms which start at rest separated by a distance of \(\num{1.5}\sigma\). Use \(\Delta t'=\num{0.01}\).
+    \item Plot the distance between the atoms as a function of time.
+    \item How does the motion fit with your expectations from~\vref{subsec:understanding}?
+\end{enumerate}
+
+\subsection{Energy}
+\begin{enumerate}[label=\roman*.]
+    \item Plot the kinetic, potential and total energy as a function of time.
+    \item Should the total energy be conserved? Why, or why not?
+    \item Does your program fulfill this? If not, what could be the cause?
+    \item Run simulations with the Euler and Euler-Cromer algorithms using the same \(\Delta t'\), and compare graphs of the total energy as a function of time.
+\end{enumerate}
+
+\subsection{Different motion}
+\begin{enumerate}[label=\roman*.]
+    \item Repeat~\vref{subsec:2motion} with an initial separation of \(\num{0.95}\sigma\). Explain your results.
+\end{enumerate}
+
+\subsection{Visualisation}
+\begin{enumerate}[label=\roman*.]
+    \item Extend your implementation such that it writes an \texttt{xyz}-file at each timestep (see \vref{app:xyz}).
+    \item Visualise the results of your simulations using Ovito (see~\vref{app:ovito}).
+\end{enumerate}
+
+%\clearpage
+\appendix
+\section*{Appendix}
+\setcounter{subsection}{0}
+\addcontentsline{toc}{section}{Appendix}
+\renewcommand{\thesubsection}{\Alph{subsection}}
+\labelformat{subsection}{appendix~#1}
+
+
+
+% __  ___   _ ____
+% \ \/ / | | |_  /
+%  >  <| |_| |/ /
+% /_/\_\\__, /___|
+%       |___/
+\subsection{Data file format}\label{app:xyz}
+The \texttt{xyz}-format is a semi-standard format for storing data from molecular dynamics simulations. Each time step is stored in the following format, and there are no blank lines between timesteps:
+\begin{itemize}
+    \item A line containing the number of atoms (an integer).
+    \item An ignored line (this line is usually written as a header for the subsequent columns).
+    \item One line for each atom, containing the atom type and the \(x\)-, \(y\)- and \(z\)-koordinates.
+\end{itemize}
+For two atoms simulated over three timesteps, where \texttt{xij} represents the \(x\)-coordinate of atom \(j\) at timestep \(i\), the file would look like this:
+\begin{lstlisting}[language=]
+    2
+    type  x   y   z
+    Ar   x11 y11 z11
+    Ar   x12 y12 z12
+    2
+    type  x   y   z
+    Ar   x21 y21 z21
+    Ar   x22 y22 z22
+    2
+    type  x   y   z
+    Ar   x31 y31 z31
+    Ar   x32 y32 z32
+\end{lstlisting}
+
+
+%             _ _
+%   _____   _(_) |_ ___
+%  / _ \ \ / / | __/ _ \
+% | (_) \ V /| | || (_) |
+%  \___/ \_/ |_|\__\___/
+\tikzexternaldisable
+\subsection{Visualisation}\label{app:ovito}
+Files written in the \texttt{xyz}-format can be read using the Ovito visualisation tool. It can be downloaded and installed from \url{https://ovito.org/index.php/download}.
+
+When the installation has finished, simply open Ovito and click ``File'' \(\to\) ``Load File`` and choose your \texttt{xyz}-file. Edit the column mapping in the dialogue if necessary. When the atoms have appeared on your screen, check the box named ``File contains time series'' on the right-hand side, press \tikz[x=8pt,y=8pt]{\filldraw[fill=white] (0,0) -- (0,1) -- (0.866,0.5) -- (0,0);} and watch your atoms move around!
 
 
 
@@ -205,8 +300,7 @@ The remedy is to change units so that most quantities are close to \(1\). From \
 
 
 
-
-
+\clearpage
 \section*{\underline{Part 1: 2-atom model}}
 
 \textbf{Bare legger en liten mal her på oppgavene jeg har programmert så langt. Veldig overfladisk oppgavetekst, kan og bør endres underveis.}
@@ -256,23 +350,23 @@ Whats the difference between these methods, and why does some of them perform be
 Generalize the program you wrote in the previous part for any number of atoms, $N$. Computing time increases drastically with system size, so some precautions should be made:
 
 \begin{itemize}
-  \item Pair-wise forces: The LJ-potential describes forces \textit{between} atoms, meaning that the forces acting on atom $i$ from atom $j$ is the same as the forces acting on atom $j$ 
-  from atom $i$, just with opposite signs. Realizing this can cut the computations in half, in contrary to computing the same force twice. 
-  \item Hopefully when you plotting the LJ-potential earlier you saw that the forces converge towards 0 as $r \rightarrow \infty$. This means that atoms that are far away from each other 
+  \item Pair-wise forces: The LJ-potential describes forces \textit{between} atoms, meaning that the forces acting on atom $i$ from atom $j$ is the same as the forces acting on atom $j$
+  from atom $i$, just with opposite signs. Realizing this can cut the computations in half, in contrary to computing the same force twice.
+  \item Hopefully when you plotting the LJ-potential earlier you saw that the forces converge towards 0 as $r \rightarrow \infty$. This means that atoms that are far away from each other
   share little to none influence, and are basically neglectable. Computing the forces between these atoms are hence a waste of computing power, and can be ignored by implementing a cut-off
   length - If the atoms are further away than this length, the forces are set to 0. For the LJ-potential this cut-off is usually set to 3.0 (LJ units).
-  \textbf{Note:} The LJ-force at $r = 3.0\sigma$ is NOT exactly 0, meaning that with the cut-off implemented, the potential curve will do a small 'jump' at this point (messing up the 
+  \textbf{Note:} The LJ-force at $r = 3.0\sigma$ is NOT exactly 0, meaning that with the cut-off implemented, the potential curve will do a small 'jump' at this point (messing up the
   conservation of energy, etc).
-  A solution to this is to simply shift the whole potential curve by the value at the cut-off point, leading to a smooth curve (no jumps) with 0 forces at cut-off. 
-  \item Due to memory restrictions it may be a bad idea to keep positions and velocities for all time steps stored in arrays. MD-simulations typically need large system sizes ($N$) 
+  A solution to this is to simply shift the whole potential curve by the value at the cut-off point, leading to a smooth curve (no jumps) with 0 forces at cut-off.
+  \item Due to memory restrictions it may be a bad idea to keep positions and velocities for all time steps stored in arrays. MD-simulations typically need large system sizes ($N$)
   and small time steps ($dt$) to create decent results, potentially leading to really huge matrices. For the simulations we'll do in this project we \textit{probably} won't need blue-screen
   inducing matrices (depending on the memory resources you have available), but if you're going to experiment further with different time steps and system sizes this \textit{may} become
   a problem. A solution here is to just keep positions and velocities for two time steps at a time, and write out the data to a text-file instead. This way there is no memory constraints,
   only on your patience waiting for the simulations to complete.
-  
+
 \end{itemize}
 
-Reproduce the results from the two-atom case with the generalized code for verification. 
+Reproduce the results from the two-atom case with the generalized code for verification.
 
 \subsection*{i)}
 
@@ -282,15 +376,15 @@ from earlier. What do you see? Visualize with Ovito, and explain the results. Ca
 \subsection*{j)}
 
 Do the same again, but now perturb \textit{one} of the atoms, giving them a small positional component (say 0.1) in one of the directions where it originally was 0. Visualize the results,
-and describe the effect of this small perturbation. Comment again on the energy of the system. 
+and describe the effect of this small perturbation. Comment again on the energy of the system.
 
-\subsection*{k)} 
+\subsection*{k)}
 
-If you have played around with different $N$s and $dt$s you've probably seen that this system isn't very stable - the atoms start spreading around outside the initial box, and some might really gain speed and 
+If you have played around with different $N$s and $dt$s you've probably seen that this system isn't very stable - the atoms start spreading around outside the initial box, and some might really gain speed and
 aim for infinity and beyond (especially if the initial positions are generated randomly). This is mainly due to two parts still missing: good initialization and boundary conditions on
 the simulation box boundaries. We will first implement the former:
 
-It might seem like a reasonable idea to initialize the atoms uniformly in the simulation box by splitting the simulation box into $N$ smaller, equally sized boxes (called \textit{unit boxes}), and 
+It might seem like a reasonable idea to initialize the atoms uniformly in the simulation box by splitting the simulation box into $N$ smaller, equally sized boxes (called \textit{unit boxes}), and
 putting one atom at the center of each box (and to some extent this is reasonable). It can be shown however that the equilibrium state of a system of atoms interacting with a LJ-potential
 doesn't prefer this simple cubic structure, but rather a face-centered cubic structure (fcc). Instead of having just one atom in each unit box, we instead have \textit{four}, which
 practically means that the number of atoms in the system should be a multiple of 4. In this structure, one atom is attached to the one of the corners of the unit box, and the other three are
@@ -298,7 +392,7 @@ put at the center of the three walls connected to this first atom (see drawing).
 
 \textbf{Put drawing here}
 
-Write a function that generates this structure - visualize with a small system to see that the implementation is working as intended. 
+Write a function that generates this structure - visualize with a small system to see that the implementation is working as intended.
 
 \subsection*{l)}
 
