@@ -176,7 +176,8 @@ where \(r\) is the distance between two atoms, \(r=\norm{\vec{r}_i-\vec{r}_j}\).
     \item Plot the potential as a function of \(r\) with \(\varepsilon=1\) and \(\sigma=1\).
     \item The behaviour of \(U(r)\) is vastly different for \(r \ll \sigma\) and \(r \gg \sigma\). Which term in the potential,~\vref{eq:lj}, dominates in each case and what is the effect?
     \item Find and characterise the equilibrium points of the potential.
-    \item Describe qualitatively the motion of two atoms which start at rest separated by a distance of \(\num{1.5}\sigma\). Explain (hint: use the graph of the potential).
+    \item Describe qualitatively the motion of two atoms which start at rest separated by a distance of \(\num{1.5}\sigma\). What if they start with a separation of \(\num{0.95}\sigma\)?  (hint: use the graph of the potential).
+    \item Characterise the shape of the potential around \(r=\num{1.0}\sigma\). Can you think of other force(s) with the same behaviour?
 \end{enumerate}
 
 \subsection{Forces and equations of motion}
@@ -226,10 +227,10 @@ The remedy is to change units so that most quantities are close to \(1\). From~\
 
 \subsection{Energy}
 \begin{enumerate}[label=\roman*.]
-    \item Plot the kinetic, potential and total energy as a function of time.
+    \item Plot the kinetic, potential and total energy as a function of time. Specify your choice of parameters.
     \item Should the total energy be conserved? Why, or why not?
     \item Does your program fulfill this? If not, what could be the cause?
-    \item Run simulations with the Euler and Euler-Cromer algorithms using the same \(\Delta t'\), and compare graphs of the total energy as a function of time.
+    \item Simulate the same system as in 2b) with the Euler, Euler-Cromer and Velocity Verlet algorithms for a total time \(T' = 5.0\), and compare graphs of the total energy as a function of time.
 \end{enumerate}
 
 \subsection{Different motion}
@@ -254,11 +255,13 @@ The remedy is to change units so that most quantities are close to \(1\). From~\
 \begin{enumerate}[label=\roman*.]
     \item Implement a solver of~\vref{eq:undim} for \(N\) atoms, given initial positions and velocities.
     \item Use Newton's third law to reduce the number of force calculations.
+    \item Reproduce your results for the 2-atom model from the previous section to verify your implementation.
 \end{enumerate}
 As you will experience, it takes a lot longer to simulate \(N\) atoms than two --- in fact the time increases as \(N^2\). One very simple way to reduce simulation times is to look at the expression (or plot) of \(U(r)\) and see that it goes very rapidly towards zero as \(r\) increases. This means that atoms far apart interact weakly, and the forces between them can be ignored.
 
 \begin{enumerate}[label=\roman*., resume]
     \item Extend your implementation such that atoms more than \(3\sigma\) apart do not interact.
+    
 \end{enumerate}
 
 \subsection{Initialisation}
