@@ -8,7 +8,7 @@ def test():
     #N = 50
     L = 15
     T = 10
-    dt = 0.02
+    dt = 0.01
     nt = int(T/dt) + 1
     m = 1
 
@@ -23,7 +23,7 @@ def test():
 
     r, v, t = simulate(r0, v0, L, m, T, dt, 'VelVerlet', wrt_file = True)
 
-    """
+
     KinEng, PotEng = Energy(r, v, t, m)
 
     plt.plot(t, (KinEng + PotEng))
@@ -32,7 +32,38 @@ def test():
     plt.ylabel(r'$E(t)$')
     plt.grid(True)
     plt.show()
-    """
+
+def test_vel():
+
+    L = 10
+    T = 10
+    dt = 0.01
+    nt = int(T/dt) + 1
+    m = 1
+
+    n = 10   # no. experiments
+    v_ave = np.zeros(nt)
+
+    for i in range(n):
+        r0 = fcc(3, L)
+
+        v0 = np.random.uniform(-2, 2, size=(len(r0)))
+
+        r, v, t = simulate(r0, v0, L, m, T, dt, 'VelVerlet', wrt_file = False)
+
+        v_corr = velocity_corr(v, t, plot=False)
+
+        v_ave += v_corr
+
+    v_ave /= n
+
+    plt.plot(t, v_ave)
+    plt.xlabel(r'$t$')
+    plt.ylabel(r'$\langle v(0) \cdot v(t) \rangle$')
+    plt.title("Velocity auto-correlation function")
+    plt.grid(True)
+    plt.show()
+
 
 def test_fcc():
 
@@ -51,4 +82,5 @@ def test_fcc():
 
 if __name__ == "__main__":
     #test_fcc()
-    test()
+    test_vel()
+    #test()

@@ -50,7 +50,7 @@ def compare_methods():
     methods = ['Euler', 'EulerCromer', 'VelVerlet']
     for method in methods:
 
-        r, v, t = simulate(r0, v0, m, 10, 0.01, method)
+        r, v, t = simulate(r0, v0, m, 5, 0.01, method)
 
         KinEng, PotEng = Energy(r, v, t, m, plot=False)
 
@@ -82,6 +82,6 @@ def test():
 
 if __name__ == "__main__":
     #test()
-    task_ab()
-    task_cd()
+    #task_ab()
+    #task_cd()
     compare_methods()

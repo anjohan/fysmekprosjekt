@@ -21,8 +21,7 @@ def LJ_pot(r, epsilon=1, sigma=1):
         The computed potential between the atoms given as input.
     """
     if r < 3.0:
-        U_corr = 4*epsilon*((sigma/3.0)**12 - (sigma/3.0)**6)
-        return 4*epsilon*((sigma/r)**12 - (sigma/r)**6) - U_corr
+        return 4*epsilon*((sigma/r)**12 - (sigma/r)**6)
     else:
         return 0
 
@@ -130,6 +129,7 @@ def simulate(r0, v0, L, m, T, dt, intg, wrt_file = False):
     v = np.zeros((nt, 3*N))
     v[0] = np.array(v0)
 
+
     # Time integration
     for i in tqdm(range(nt-1)):
 
@@ -197,7 +197,7 @@ def simulate(r0, v0, L, m, T, dt, intg, wrt_file = False):
             out[out==0] = 1
             v[i+1] = v[i+1]*out
             #r[i+1] = r[i] + v[i+1]*dt
-            
+
         else:
             print('Error: The variable intg must either be "Euler", "EulerCromer" or "VelVerlet".\nExiting...')
             sys.exit(0)
@@ -229,6 +229,9 @@ def Energy(r, v, t, m, plot = True):
     KinEng = np.zeros(nt)
     PotEng = np.zeros(nt)
 
+    # Correction to potential energy due to cut-off
+    U_corr = 4*((3.0)**(-12) - (3.0)**(-6))
+
     for i in range(nt):
         for j in range(N):
             v_abs2 = np.sum(v[i, 3*j:3*j + 3]**2)
@@ -237,7 +240,7 @@ def Energy(r, v, t, m, plot = True):
             for k in range(j+1, N):
 
                 d = np.sqrt(np.sum((r[i, 3*j: 3*j +3] - r[i, 3*k: 3*k +3])**2))
-                PotEng[i] += LJ_pot(d)
+                PotEng[i] += LJ_pot(d) - U_corr
 
     if plot:
         fig, (ax1, ax2) = plt.subplots(2, 1)
@@ -255,6 +258,22 @@ def Energy(r, v, t, m, plot = True):
         plt.show()
 
     return KinEng, PotEng
+
+def velocity_corr(v, t, plot=True):
+
+    nt = len(t)
+    N = v.shape[1]
+    v_corr = np.zeros(nt)
+
+    for i in range(nt):
+        v_corr[i] = np.dot(v[0], v[i])
+    v_corr /= N
+
+    if plot:
+        plt.plot(t, v_corr)
+        plt.show()
+
+    return v_corr
 
 
 def write_xyz(r):
