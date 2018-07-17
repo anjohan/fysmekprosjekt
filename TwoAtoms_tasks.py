@@ -81,7 +81,7 @@ def test():
 
 
 if __name__ == "__main__":
-    test()
-    #task_ab()
-    #task_cd()
-    #compare_methods()
+    #test()
+    task_ab()
+    task_cd()
+    compare_methods()
