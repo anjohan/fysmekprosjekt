@@ -239,9 +239,48 @@ The remedy is to change units so that most quantities are close to \(1\). From~\
 
 \subsection{Visualisation}
 \begin{enumerate}[label=\roman*.]
-    \item Extend your implementation such that it writes to an \texttt{xyz}-file at each timestep (see \vref{app:xyz}).
+    \item Extend your implementation such that it writes to an \texttt{xyz}-file at each timestep (see~\vref{app:xyz}).
     \item Visualise the results of your simulations using Ovito (see~\vref{app:ovito}).
 \end{enumerate}
+
+%  _   _         _
+% | \ | |   __ _| |_ ___  _ __ ___   ___ _ __
+% |  \| |  / _` | __/ _ \| '_ ` _ \ / _ \ '__|
+% | |\  | | (_| | || (_) | | | | | |  __/ |
+% |_| \_|  \__,_|\__\___/|_| |_| |_|\___|_|
+\section{Large systems}
+
+\subsection{Implementation}
+\begin{enumerate}[label=\roman*.]
+    \item Implement a solver of~\vref{eq:undim} for \(N\) atoms, given initial positions and velocities.
+    \item Use Newton's third law to reduce the number of force calculations.
+\end{enumerate}
+As you will experience, it takes a lot longer to simulate \(N\) atoms than two --- in fact the time increases as \(N^2\). One very simple way to reduce simulation times is to look at the expression (or plot) of \(U(r)\) and see that it goes very rapidly towards zero as \(r\) increases. This means that atoms far apart interact weakly, and the forces between them can be ignored.
+
+\begin{enumerate}[label=\roman*., resume]
+    \item Extend your implementation such that atoms more than \(3\sigma\) apart do not interact.
+\end{enumerate}
+
+\subsection{Initialisation}
+While we are interested in simulating liquid argon, which will not be in an ordered structure, the simplest choice of initial positions is a regular crystal structure. Our choice of structure is the face-centred cubic lattice, as this is the crystal structure of solid argon.
+
+The smallest repeating unit is called a unit cell, and each unit cell contains four atoms. When creating a structure of \(N\times N\times N\) unit cells, the atoms should be placed at
+\[
+    \begin{bmatrix}
+        i & j & k \\
+        i & 0.5+j & 0.5+k \\
+        0.5+i & j & 0.5+k \\
+        0.5+i & 0.5+j & k
+    \end{bmatrix}\cdot d
+\]
+where \(i\), \(j\) and \(k\) run from \(0\) to \(N-1\) and \(d\) is the size of the unit cell. This structure will contain \(4N^3\) atoms in total.
+\begin{enumerate}[label=\roman*.]
+    \item Write a function which takes \(N\) and \(d\) as arguments and returns the positions of \(4N^3\) on a face-centred cubic lattice.
+    \item Verify your implementation by calling your function for \(N=4\), writing the resulting positions to an \texttt{xyz}-file and looking at the result in Ovito. Your system should contain \(4\cdot4^3=256\) atoms.
+\end{enumerate}
+
+
+
 
 %\clearpage
 \appendix
@@ -250,8 +289,6 @@ The remedy is to change units so that most quantities are close to \(1\). From~\
 \addcontentsline{toc}{section}{Appendix}
 \renewcommand{\thesubsection}{\Alph{subsection}}
 \labelformat{subsection}{appendix~#1}
-
-
 
 % __  ___   _ ____
 % \ \/ / | | |_  /
