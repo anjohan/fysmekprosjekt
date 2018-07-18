@@ -41,7 +41,7 @@ def test_vel():
     nt = int(T/dt) + 1
     m = 1
 
-    n = 10   # no. experiments
+    n = 20   # no. experiments
     v_ave = np.zeros(nt)
 
     for i in range(n):
@@ -57,7 +57,11 @@ def test_vel():
 
     v_ave /= n
 
-    intgr = np.trapz(v_ave, t, dx = 0.1)
+    sigma = 3.405*10**(-8)
+    tau = 2.1569*10**(-12)
+
+    intgr = np.trapz(v_ave, t, dx = 0.1)/3
+    intgr *= sigma**2/tau
     print("Diff: ", intgr)
 
     plt.plot(t, v_ave)
@@ -66,6 +70,23 @@ def test_vel():
     plt.title("Velocity auto-correlation function")
     plt.grid(True)
     plt.show()
+
+def test_rdf():
+
+    #L = 15
+    L = 8.525 # Corresponding to 500 atoms
+    T = 10
+    dt = 0.01
+    nt = int(T/dt) + 1
+    m = 1
+
+    r0 = fcc(5, L)
+
+    v0 = np.random.uniform(-2, 2, size=(len(r0)))
+
+    r, v, t = simulate(r0, v0, L, m, T, dt, 'VelVerlet', wrt_file = False)
+
+    rdf(r, L)
 
 
 def test_fcc():
@@ -85,5 +106,6 @@ def test_fcc():
 
 if __name__ == "__main__":
     #test_fcc()
-    test_vel()
+    #test_vel()
+    test_rdf()
     #test()

@@ -260,21 +260,84 @@ def Energy(r, v, t, m, plot = True):
     return KinEng, PotEng
 
 def velocity_corr(v, t, plot=True):
+    """ Calculates the velocity auto-correlation function.
+
+    Args:
+        v: Array with velocities at all time steps.
+        t: Array with the discrete time points.
+        plot: Whether to plot the result or not, default set as True.
+
+    Returns:
+        v_corr: Computed auto-correlation at each time step.
+    """
 
     nt = len(t)
     N = int(v.shape[1]/3)
     v_corr = np.zeros(nt)
-
-
+    v2 = v.reshape((nt,N,3))
+    v02 = v[0].reshape((N,3))
     for i in range(nt):
-        v_corr[i] = np.dot(v[0], v[i])/N
-    v_corr /= v_corr[0]
-
+        v_corr[i] = np.sum(np.sum(v2[i]*v02,axis=1)/np.sum(v02**2,axis=1))
+        #v_corr[i] = np.dot(v[0], v[i])/(N*np.dot(v_corr[0=], v_corr[0]))
+    v_corr /= N
     if plot:
         plt.plot(t, v_corr)
+        plt.xlabel(r'$t$')
+        plt.ylabel(r'$\langle v(0) \cdot v(t) \rangle$')
+        plt.title("Velocity auto-correlation function")
+        plt.grid(True)
         plt.show()
 
     return v_corr
+
+def rdf(r, L):
+    """ Computes the radial distribution function.
+
+    Args:
+        r: Array with positions at all time steps.
+        L: Length of one each side of the simulation box.
+
+    Returns:
+        hist: Histogram (rdf) for at all timesteps.
+    """
+
+    N = int(r.shape[1]/3)
+    nt = r.shape[0]
+
+    bins = np.linspace(0, 5.0, 201)
+    bin_cen = (bins[1:] + bins[:-1])/2
+    dr = bin_cen[1] - bin_cen[0]
+    hist = np.zeros((nt, len(bins)-1))
+
+    norm = (L**3/N**2)/(4*np.pi*bin_cen**2*dr)
+
+    for i in tqdm(range(1, N)):
+        r_abs = r[:, 3*i:] - r[:, :-3*i]
+        r_abs = np.sqrt(np.add.reduceat(r_abs**2, np.arange(0, r_abs.shape[1], 3), axis=1))
+
+        for j in range(nt):
+            hist_j, edges = np.histogram(r_abs[j], bins)
+            hist[j] += hist_j*norm
+
+    rdf = np.sum(hist[int(nt/2):, :], axis=0)/int(nt/2)
+
+    plt.plot(bin_cen, hist[0])
+    plt.xlabel(r"$r$")
+    plt.ylabel(r"$g(r)$")
+    plt.title("Radial distribution function at t'=0")
+    plt.grid(True)
+    plt.show()
+
+    plt.plot(bin_cen, rdf)
+    plt.xlabel(r"$r$")
+    plt.ylabel(r"$\langle g(r) \rangle$")
+    plt.title("Radial distribution function averaged over time")
+    plt.grid(True)
+    plt.show()
+
+
+
+    return hist
 
 
 def write_xyz(r):
