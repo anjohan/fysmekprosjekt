@@ -57,6 +57,9 @@ def test_vel():
 
     v_ave /= n
 
+    intgr = np.trapz(v_ave, t, dx = 0.1)
+    print("Diff: ", intgr)
+
     plt.plot(t, v_ave)
     plt.xlabel(r'$t$')
     plt.ylabel(r'$\langle v(0) \cdot v(t) \rangle$')

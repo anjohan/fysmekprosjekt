@@ -262,12 +262,13 @@ def Energy(r, v, t, m, plot = True):
 def velocity_corr(v, t, plot=True):
 
     nt = len(t)
-    N = v.shape[1]
+    N = int(v.shape[1]/3)
     v_corr = np.zeros(nt)
 
+
     for i in range(nt):
-        v_corr[i] = np.dot(v[0], v[i])
-    v_corr /= N
+        v_corr[i] = np.dot(v[0], v[i])/N
+    v_corr /= v_corr[0]
 
     if plot:
         plt.plot(t, v_corr)
