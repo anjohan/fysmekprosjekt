@@ -215,7 +215,7 @@ The remedy is to change units so that most quantities are close to \(1\). From~\
 \subsection{Implementation}
 \begin{enumerate}[label=\roman*.]
     \item Write a function which solves~\vref{eq:undim} for two atoms and finds the positions and velocities of the atoms as a function of time. Implement three different integration methods:
-    Euler, Euler-Cromer and Velocity-Verlet (see description of Velocity-Verlet in Appendix ??).
+        Euler, Euler-Cromer and Velocity-Verlet (see~\vref{app:verlet} for a description of the latter).
 \end{enumerate}
 
 \subsection{Motion}\label{subsec:2motion}
@@ -230,7 +230,7 @@ The remedy is to change units so that most quantities are close to \(1\). From~\
     \item Plot the kinetic, potential and total energy as a function of time. Specify your choice of parameters.
     \item Should the total energy be conserved? Why, or why not?
     \item Does your program fulfill this? If not, what could be the cause?
-    \item Simulate the same system as in 2b) with the Euler, Euler-Cromer and Velocity Verlet algorithms for a total time \(T' = 5.0\), and compare graphs of the total energy as a function of time.
+    \item Simulate the same system as in~\vref{subsec:2motion} with the Euler, Euler-Cromer and Velocity Verlet algorithms for a total time \(t' = 5.0\), and compare graphs of the total energy as a function of time.
 \end{enumerate}
 
 \subsection{Different motion}
@@ -261,7 +261,7 @@ As you will experience, it takes a lot longer to simulate \(N\) atoms than two -
 
 \begin{enumerate}[label=\roman*., resume]
     \item Extend your implementation such that atoms more than \(3\sigma\) apart do not interact.
-    
+
 \end{enumerate}
 
 \subsection{Initialisation}
@@ -333,9 +333,32 @@ Files written in the \texttt{xyz}-format can be read using the Ovito visualisati
 
 When the installation has finished, simply open Ovito and click ``File'' \(\to\) ``Load File`` and choose your \texttt{xyz}-file. Edit the column mapping in the dialogue if necessary. When the atoms have appeared on your screen, check the box named ``File contains time series'' on the right-hand side, press \tikz[x=8pt,y=8pt]{\filldraw[fill=white] (0,0) -- (0,1) -- (0.866,0.5) -- (0,0);} and watch your atoms move around!
 
-
-
-
+%                 _      _
+% __   _____ _ __| | ___| |_
+% \ \ / / _ \ '__| |/ _ \ __|
+%  \ V /  __/ |  | |  __/ |_
+%   \_/ \___|_|  |_|\___|\__|
+\subsection{Velocity-Verlet}\label{app:verlet}
+The Velocity-Verlet integration scheme is based on a second order Taylor polynomial. With \(\vec{r}_i(t)\) denoting the position of atom \(i\) at a time \(t\), the second order Taylor expansions of position and velocity can be written as
+\begin{alignat*}{2}
+    \vec{r}_i(t+\Delta t) &\approx \vec{r}_i(t) + \vec{v}_i(t)\Delta t + \tfrac{1}{2}\vec{a}_i(t)\Delta t^2\\
+    \vec{v}_i(t+\Delta t) &\approx \vec{v}_i(t) + \vec{a}_i(t)\Delta t + \tfrac{1}{2}\vec{a}_i'(t)\Delta t^2.
+\end{alignat*}
+There is no explicit expression for \(\vec{a}'(t)\). It can, however, be approximated using our old friend
+\[
+\vec{a}\,'(t)\approx\frac{\vec{a}(t+\Delta t)-\vec{a}(t)}{\Delta t}.
+\]
+Since the acceleration is independent of the velocity, the newly updated position, \(\vec{r}(t+\Delta t)\), is sufficient to calculate \(\vec{a}(t+h)\). Inserting this into the expression for \(\vec{v}(t+\Delta t)\), we get
+\begin{alignat*}{2}
+    \vec{v}_i(t+\Delta t) &\approx \vec{v}_i(t) + \vec{a}_i(t)\Delta t + \tfrac{1}{2}\qty(\vec{a}_i(t+\Delta t)-\vec{a}_i(t))\Delta t\\
+    &= \vec{v}_i(t) + \tfrac{1}{2}\qty(\vec{a}_i(t)+\vec{a}_i(t+\Delta t))\Delta t.
+\end{alignat*}
+The discretised algorithm then becomes
+\begin{alignat*}{2}
+    \vec{r}_{i,j+1} &\approx \vec{r}_{i,j} + \vec{v}_{i,j}\Delta t + \tfrac{1}{2}\vec{a}_{i,j}\Delta t^2\\
+    \vec{v}_{i,j+1} &\approx \vec{v}_{i,j} + \tfrac{1}{2}\qty(\vec{a}_{i,j} + \vec{a}_{i,j+1})\Delta t,
+\end{alignat*}
+where \(\vec{r}_{i,j}\) is the position of atom \(i\) at timestep \(j\). In your implementation, you should avoid having to calculate the acceleration more than once per timestep.
 
 
 
