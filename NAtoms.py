@@ -317,7 +317,7 @@ def rdf(r, L):
 
         for j in range(nt):
             hist_j, edges = np.histogram(r_abs[j], bins)
-            hist[j] += hist_j*norm
+            hist[j] += 2*hist_j*norm
 
     rdf = np.sum(hist[int(nt/2):, :], axis=0)/int(nt/2)
 
