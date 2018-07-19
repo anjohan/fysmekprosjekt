@@ -291,9 +291,44 @@ The smallest repeating unit is called a unit cell, and each unit cell contains f
         i & 0.5+j & 0.5+k \\
         0.5+i & j & 0.5+k \\
         0.5+i & 0.5+j & k
-    \end{bmatrix}\cdot d
-\]
+    \end{bmatrix}\cdot d\qquad \qquad\qquad
+\newcommand{\Depth}{2}
+\newcommand{\Height}{2}
+\newcommand{\Width}{2}
+\tikzexternaldisable
+\begin{tikzpicture}[baseline={()}]
+\coordinate (c) at (0,0.5*\Width,0.5*\Height);
+\coordinate (O) at (0,0,0);
+\coordinate (A) at (0,\Width,0);
+\coordinate (B) at (0,\Width,\Height);
+\coordinate (C) at (0,0,\Height);
+\coordinate (D) at (\Depth,0,0);
+\coordinate (E) at (\Depth,\Width,0);
+\coordinate (F) at (\Depth,\Width,\Height);
+\coordinate (G) at (\Depth,0,\Height);
+\coordinate (H) at (\Depth/3,\Width/3,\Height/2);
+\coordinate (I) at (\Depth/10,\Width/2,\Height/1.4);
+\coordinate (J) at (\Depth/1.5,\Width/5,\Height);
+\draw[fill=whitegray!20] (O) -- (C) -- (G) -- (D) -- cycle;
+\draw[fill=gray!20] (O) -- (A) -- (E) -- (D) -- cycle;
+\draw[fill=gray!10] (O) -- (A) -- (B) -- (C) -- cycle;
+\draw[fill=gray!20,opacity=0.4] (D) -- (E) -- (F) -- (G) -- cycle;
+\draw[fill=gray!5,opacity=0.6] (C) -- (B) -- (F) -- (G) -- cycle;
+\draw[fill=gray!5,opacity=0.8] (A) -- (B) -- (F) -- (E) -- cycle;
+\draw[black,fill=black] (C) circle (0.67ex);
+\draw[black,fill=black] (H) circle (0.67ex);
+\draw[black,fill=black] (I) circle (0.67ex);
+\draw[black,fill=black] (J) circle (0.67ex);
+\draw[thick, dashed] (C) -- (H);
+\draw[thick, dashed] (C) -- (I);
+\draw[thick, dashed] (C) -- (J);
+\end{tikzpicture}
+    
+    \]
 where \(i\), \(j\) and \(k\) run from \(0\) to \(n-1\) and \(d\) is the size of the unit cell. This structure will contain \(4n^3\) atoms in total.
+
+
+
 \begin{enumerate}[label=\roman*.]
     \item Write a function which takes \(n\) and \(d\) as arguments and returns the positions of \(4n^3\) on a face-centred cubic lattice.
     \item Verify your implementation by calling your function for \(n=4\), writing the resulting positions to an \texttt{xyz}-file and looking at the result in Ovito. Your system should contain \(4\cdot4^3=256\) atoms.
