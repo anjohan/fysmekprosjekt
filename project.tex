@@ -295,16 +295,28 @@ The smallest repeating unit is called a unit cell, and each unit cell contains f
 \]
 where \(i\), \(j\) and \(k\) run from \(0\) to \(n-1\) and \(d\) is the size of the unit cell. This structure will contain \(4n^3\) atoms in total.
 \begin{enumerate}[label=\roman*.]
-    \item Write a function which takes \(n\) and \(d\) as arguments and returns the positions of \(4n^3\) on a face-centred cubic lattice.
+    \item Write a function which takes \(n\) and \(d\) as arguments and returns the positions of \(4n^3\) atoms on a face-centred cubic lattice.
     \item Verify your implementation by calling your function for \(n=4\), writing the resulting positions to an \texttt{xyz}-file and looking at the result in Ovito. Your system should contain \(4\cdot4^3=256\) atoms.
-    \item Show that the unit cell size correspon
+    \item Show that the unit cell size corresponding to the correct density \(\rho=\SI{1.374}{\gram\per\cm\tothe3}\) is \(d=1.7 \sigma\).
 \end{enumerate}
 
-\subsection{Many atoms}
+\subsection{Many atoms, open boundary}
 \begin{enumerate}[label=\roman*.]
-    \item bla
+    \item Simulate \(256\) atoms starting from rest, and visualise the results.
+    \item Plot the potential, kinetic and total energy as a function of time. What is the main difference from the energy graphs for two and four atoms?
 \end{enumerate}
 
+\subsection{Boundary conditions}
+In the previous exercise, you probably observed that the atoms immediately spread out into a large volume, possibly with some continuing to infinity (and beyond). This is not the behaviour we want. Ideally, we would like to model the bulk behaviour of argon by the use of periodic boundary conditions, but the implementation of this is a bit finicky.
+
+Instead, we will model atoms which are forced to remain inside the initial box by the use of reflective boundary conditions. This gives reasonable results for the quantities that we want to measure.
+Reflective boundary conditions simply means that atoms that would otherwise leave the box, are turned around.
+\begin{enumerate}[label=\roman*.]
+    \item Implement reflective boundary conditions in your program.
+    \item Run a simulation with \(84\) atoms and verify visually that your implementation works.
+\end{enumerate}
+
+\section{Science}
 
 
 %\clearpage
