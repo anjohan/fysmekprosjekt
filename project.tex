@@ -261,11 +261,15 @@ The remedy is to change units so that most quantities are close to \(1\). From~\
 
 As you will experience, it takes a lot longer to simulate \(N\) atoms than two --- in fact the time increases as \(N^2\). One very simple way to reduce simulation times is to look at the expression (or plot) of \(U(r)\) and see that it goes very rapidly towards zero as \(r\) increases. This means that atoms far apart interact weakly, and the forces between them can be ignored.
 
-This causes a small jump at \(r = 3\sigma\) however, since the potential at this distance is not exactly 0. The remedy here is to simply shift the whole potential by the term \(U(r=3.0)\), leading to a smooth curve up until \(r=3\sigma\).
-
 \begin{enumerate}[label=\roman*., resume]
     \item Extend your implementation such that atoms more than \(3\sigma\) apart do not interact.
-    \item Plot again \(U(r)\) and \(F(r)\). Does the shift of the potential described above impact the force calculations?
+\end{enumerate}
+
+This effectively sets the potential energy \(U(r)\) to be \(0\) for \(r\geq 3\sigma\). Since \(U(3\sigma)\) is not exactly equal to \(0\), the potential energy becomes discontinuous, which breaks energy conservation. The solution is to use a shifted potential, i.e.\ adding a constant such that \(U(3\sigma)\) is exactly zero.
+
+\begin{enumerate}[label=\roman*., resume]
+    \item Plot the shifted potential and the corresponding force to verify your implementation of the cut-off.
+    \item Does the shift of the potential described above impact the force calculations?
 \end{enumerate}
 
 \subsection{Verification}
