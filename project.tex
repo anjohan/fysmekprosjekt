@@ -317,9 +317,10 @@ Reflective boundary conditions simply means that atoms that would otherwise leav
 \end{enumerate}
 
 \section{Science}
+By now, you will have a well-functioning (if not terribly efficient) set of tools for running molecular dynamics simulations. It is now time to apply these tools to real problems. The goal is to reproduce some of the main results from the first article containing proper molecular dynamics (``landmark simulations'' according to Wikipedia\footnote{\url{https://en.wikipedia.org/wiki/Molecular_dynamics\#History}}), written by A. Rahman in 1964\cite{Rahman_1964}.
 
 
-%\clearpage
+\clearpage
 \appendix
 \section*{Appendix}
 \setcounter{subsection}{0}
@@ -398,118 +399,116 @@ where \(\vec{r}_{i,j}\) is the position of atom \(i\) at timestep \(j\). In your
 
 
 
-\clearpage
-\section*{\underline{Part 1: 2-atom model}}
-
-\textbf{Bare legger en liten mal her på oppgavene jeg har programmert så langt. Veldig overfladisk oppgavetekst, kan og bør endres underveis.}
-
-\subsection*{a)}
-
-Plot the LJ-potential curve. What does the different terms in the potential do?
-
-\subsection*{b)}
-
-Find the force corresponding to the potential from a), and plot the result. For what distance $r$ is this force 0? Is this force conservative? \textit{What's different with this force
-compared to say Newton's Law of gravitation? What about the force from a spring?}
-
-\subsection*{c)}
-
-Say we place one atom at $\vec{r_1} = [0, 0, 0]$ and the other at $\vec{r_2} = [1.5, 0, 0]$, with no initial velocities. Describe qualitaively what the motions of the atoms will look like. Support your arguments with the LJ potential curve.
-
-If we place the second atom at $\vec{r_2} = [0.95, 0, 0]$ instead, what do you expect then? Explain by again using the potential curve from task a).
-
-\subsection*{d)}
-
-Develop a code to simulate a system of two atoms with the LJ-forces being the only ones acting. Use the Euler-Cromer integration method (?). Simulate the system with the initial conditions
-(both cases) from task c), and plot the distance between the atoms $r$ as a function of time. What do you see?
-
-\subsection*{e) (optional)}
-
-Download a visualization tool (i.e. Ovito), and write a function that writes the positions of the atoms at every time step to a xyz.-file. Load this file into \textit{Ovito} and describe
-what you see. Does this fit well with the assumptions you made in task c) ?
-
-\subsection*{f)}
-
-Implement different integration methods so that you have the Euler, Euler-Cromer and Velocity-Verlet methods available for your simulations. Run simulations with the same initial conditions
-as in the first case in task c) ($\vec{r_1} = [0, 0, 0]$, $\vec{r_2} = [1.5, 0, 0]$) for all three methods, and plot the mechanical energy for all three with $\Delta t = 0.01$. Compare
-the results for all three methods. How does these methods perform in terms of energy conservation?
-
-\subsection*{g) (I tvil om denne skal med)}
-
-Run simulations for all three methods implemented in the previous task, and find the an approximation to the largest time step ($\Delta t$) required to keep the integration from exploding.
-Whats the difference between these methods, and why does some of them perform better than others?
-
-
-
-\section*{\underline{Part 2: N-atom model}}
-
-\subsection*{h)}
-
-Generalize the program you wrote in the previous part for any number of atoms, $N$. Computing time increases drastically with system size, so some precautions should be made:
-
-\begin{itemize}
-  \item Pair-wise forces: The LJ-potential describes forces \textit{between} atoms, meaning that the forces acting on atom $i$ from atom $j$ is the same as the forces acting on atom $j$
-  from atom $i$, just with opposite signs. Realizing this can cut the computations in half, in contrary to computing the same force twice.
-  \item Hopefully when you plotting the LJ-potential earlier you saw that the forces converge towards 0 as $r \rightarrow \infty$. This means that atoms that are far away from each other
-  share little to none influence, and are basically neglectable. Computing the forces between these atoms are hence a waste of computing power, and can be ignored by implementing a cut-off
-  length - If the atoms are further away than this length, the forces are set to 0. For the LJ-potential this cut-off is usually set to 3.0 (LJ units).
-  \textbf{Note:} The LJ-force at $r = 3.0\sigma$ is NOT exactly 0, meaning that with the cut-off implemented, the potential curve will do a small 'jump' at this point (messing up the
-  conservation of energy, etc).
-  A solution to this is to simply shift the whole potential curve by the value at the cut-off point, leading to a smooth curve (no jumps) with 0 forces at cut-off.
-  \item Due to memory restrictions it may be a bad idea to keep positions and velocities for all time steps stored in arrays. MD-simulations typically need large system sizes ($N$)
-  and small time steps ($dt$) to create decent results, potentially leading to really huge matrices. For the simulations we'll do in this project we \textit{probably} won't need blue-screen
-  inducing matrices (depending on the memory resources you have available), but if you're going to experiment further with different time steps and system sizes this \textit{may} become
-  a problem. A solution here is to just keep positions and velocities for two time steps at a time, and write out the data to a text-file instead. This way there is no memory constraints,
-  only on your patience waiting for the simulations to complete.
-
-\end{itemize}
-
-Reproduce the results from the two-atom case with the generalized code for verification.
-
-\subsection*{i)}
-
-Start with a 4-atom system. Place the atoms so that $\vec{r_1} = 2\vec{i}$, $\vec{r_2} = -2\vec{i}$, $\vec{r_3} = 2\vec{j}$ and $\vec{r_4} = -2\vec{j}$. Compare with the experiment with two atoms
-from earlier. What do you see? Visualize with Ovito, and explain the results. Calculate the potential and kinetic energy of the system, and comment on the conservation of energy.
-
-\subsection*{j)}
-
-Do the same again, but now perturb \textit{one} of the atoms, giving them a small positional component (say 0.1) in one of the directions where it originally was 0. Visualize the results,
-and describe the effect of this small perturbation. Comment again on the energy of the system.
-
-\subsection*{k)}
-
-If you have played around with different $N$s and $dt$s you've probably seen that this system isn't very stable - the atoms start spreading around outside the initial box, and some might really gain speed and
-aim for infinity and beyond (especially if the initial positions are generated randomly). This is mainly due to two parts still missing: good initialization and boundary conditions on
-the simulation box boundaries. We will first implement the former:
-
-It might seem like a reasonable idea to initialize the atoms uniformly in the simulation box by splitting the simulation box into $N$ smaller, equally sized boxes (called \textit{unit boxes}), and
-putting one atom at the center of each box (and to some extent this is reasonable). It can be shown however that the equilibrium state of a system of atoms interacting with a LJ-potential
-doesn't prefer this simple cubic structure, but rather a face-centered cubic structure (fcc). Instead of having just one atom in each unit box, we instead have \textit{four}, which
-practically means that the number of atoms in the system should be a multiple of 4. In this structure, one atom is attached to the one of the corners of the unit box, and the other three are
-put at the center of the three walls connected to this first atom (see drawing).
-
-\textbf{Put drawing here}
-
-Write a function that generates this structure - visualize with a small system to see that the implementation is working as intended.
-
-\subsection*{l)}
-
-The main reason that atoms occasionally escapes the system is the obvious one - we are allowing them to. In a MD-simulation we're for the most part simulating the behaviour of a \textit{tiny}
-part of a much larger material, so the box we're simulating will in reality be surrounded by other similar boxes. So far we've not implemented anything telling the atoms what happens when they cross
-the boundaries of the simulation box, but we have a few options available:
-
-\begin{itemize}
- \item Reflective boundaries: A simple, but less realistic method is to simply reflect the atoms moving out of the box back in. This simulates a hard wall situated at the boundaries,
- and while it does conserve energy, it does a poor job of keeping the fcc structure of the system.
- \item Periodic boundary conditions: A more realistic option, where instead of the atoms being reflected back, they appear on the other side of the system.
-\end{itemize}
-
-\textbf{BlaBla om at det også må regnes ut krefter på tvers av grensene.}
-
-
+% \clearpage
+% \section*{\underline{Part 1: 2-atom model}}
+%
+% \textbf{Bare legger en liten mal her på oppgavene jeg har programmert så langt. Veldig overfladisk oppgavetekst, kan og bør endres underveis.}
+%
+% \subsection*{a)}
+%
+% Plot the LJ-potential curve. What does the different terms in the potential do?
+%
+% \subsection*{b)}
+%
+% Find the force corresponding to the potential from a), and plot the result. For what distance $r$ is this force 0? Is this force conservative? \textit{What's different with this force
+% compared to say Newton's Law of gravitation? What about the force from a spring?}
+%
+% \subsection*{c)}
+%
+% Say we place one atom at $\vec{r_1} = [0, 0, 0]$ and the other at $\vec{r_2} = [1.5, 0, 0]$, with no initial velocities. Describe qualitaively what the motions of the atoms will look like. Support your arguments with the LJ potential curve.
+%
+% If we place the second atom at $\vec{r_2} = [0.95, 0, 0]$ instead, what do you expect then? Explain by again using the potential curve from task a).
+%
+% \subsection*{d)}
+%
+% Develop a code to simulate a system of two atoms with the LJ-forces being the only ones acting. Use the Euler-Cromer integration method (?). Simulate the system with the initial conditions
+% (both cases) from task c), and plot the distance between the atoms $r$ as a function of time. What do you see?
+%
+% \subsection*{e) (optional)}
+%
+% Download a visualization tool (i.e. Ovito), and write a function that writes the positions of the atoms at every time step to a xyz.-file. Load this file into \textit{Ovito} and describe
+% what you see. Does this fit well with the assumptions you made in task c) ?
+%
+% \subsection*{f)}
+%
+% Implement different integration methods so that you have the Euler, Euler-Cromer and Velocity-Verlet methods available for your simulations. Run simulations with the same initial conditions
+% as in the first case in task c) ($\vec{r_1} = [0, 0, 0]$, $\vec{r_2} = [1.5, 0, 0]$) for all three methods, and plot the mechanical energy for all three with $\Delta t = 0.01$. Compare
+% the results for all three methods. How does these methods perform in terms of energy conservation?
+%
+% \subsection*{g) (I tvil om denne skal med)}
+%
+% Run simulations for all three methods implemented in the previous task, and find the an approximation to the largest time step ($\Delta t$) required to keep the integration from exploding.
+% Whats the difference between these methods, and why does some of them perform better than others?
+%
+%
+%
+% \section*{\underline{Part 2: N-atom model}}
+%
+% \subsection*{h)}
+%
+% Generalize the program you wrote in the previous part for any number of atoms, $N$. Computing time increases drastically with system size, so some precautions should be made:
+%
+% \begin{itemize}
+%   \item Pair-wise forces: The LJ-potential describes forces \textit{between} atoms, meaning that the forces acting on atom $i$ from atom $j$ is the same as the forces acting on atom $j$
+%   from atom $i$, just with opposite signs. Realizing this can cut the computations in half, in contrary to computing the same force twice.
+%   \item Hopefully when you plotting the LJ-potential earlier you saw that the forces converge towards 0 as $r \rightarrow \infty$. This means that atoms that are far away from each other
+%   share little to none influence, and are basically neglectable. Computing the forces between these atoms are hence a waste of computing power, and can be ignored by implementing a cut-off
+%   length - If the atoms are further away than this length, the forces are set to 0. For the LJ-potential this cut-off is usually set to 3.0 (LJ units).
+%   \textbf{Note:} The LJ-force at $r = 3.0\sigma$ is NOT exactly 0, meaning that with the cut-off implemented, the potential curve will do a small 'jump' at this point (messing up the
+%   conservation of energy, etc).
+%   A solution to this is to simply shift the whole potential curve by the value at the cut-off point, leading to a smooth curve (no jumps) with 0 forces at cut-off.
+%   \item Due to memory restrictions it may be a bad idea to keep positions and velocities for all time steps stored in arrays. MD-simulations typically need large system sizes ($N$)
+%   and small time steps ($dt$) to create decent results, potentially leading to really huge matrices. For the simulations we'll do in this project we \textit{probably} won't need blue-screen
+%   inducing matrices (depending on the memory resources you have available), but if you're going to experiment further with different time steps and system sizes this \textit{may} become
+%   a problem. A solution here is to just keep positions and velocities for two time steps at a time, and write out the data to a text-file instead. This way there is no memory constraints,
+%   only on your patience waiting for the simulations to complete.
+%
+% \end{itemize}
+%
+% Reproduce the results from the two-atom case with the generalized code for verification.
+%
+% \subsection*{i)}
+%
+% Start with a 4-atom system. Place the atoms so that $\vec{r_1} = 2\vec{i}$, $\vec{r_2} = -2\vec{i}$, $\vec{r_3} = 2\vec{j}$ and $\vec{r_4} = -2\vec{j}$. Compare with the experiment with two atoms
+% from earlier. What do you see? Visualize with Ovito, and explain the results. Calculate the potential and kinetic energy of the system, and comment on the conservation of energy.
+%
+% \subsection*{j)}
+%
+% Do the same again, but now perturb \textit{one} of the atoms, giving them a small positional component (say 0.1) in one of the directions where it originally was 0. Visualize the results,
+% and describe the effect of this small perturbation. Comment again on the energy of the system.
+%
+% \subsection*{k)}
+%
+% If you have played around with different $N$s and $dt$s you've probably seen that this system isn't very stable - the atoms start spreading around outside the initial box, and some might really gain speed and
+% aim for infinity and beyond (especially if the initial positions are generated randomly). This is mainly due to two parts still missing: good initialization and boundary conditions on
+% the simulation box boundaries. We will first implement the former:
+%
+% It might seem like a reasonable idea to initialize the atoms uniformly in the simulation box by splitting the simulation box into $N$ smaller, equally sized boxes (called \textit{unit boxes}), and
+% putting one atom at the center of each box (and to some extent this is reasonable). It can be shown however that the equilibrium state of a system of atoms interacting with a LJ-potential
+% doesn't prefer this simple cubic structure, but rather a face-centered cubic structure (fcc). Instead of having just one atom in each unit box, we instead have \textit{four}, which
+% practically means that the number of atoms in the system should be a multiple of 4. In this structure, one atom is attached to the one of the corners of the unit box, and the other three are
+% put at the center of the three walls connected to this first atom (see drawing).
+%
+% \textbf{Put drawing here}
+%
+% Write a function that generates this structure - visualize with a small system to see that the implementation is working as intended.
+%
+% \subsection*{l)}
+%
+% The main reason that atoms occasionally escapes the system is the obvious one - we are allowing them to. In a MD-simulation we're for the most part simulating the behaviour of a \textit{tiny}
+% part of a much larger material, so the box we're simulating will in reality be surrounded by other similar boxes. So far we've not implemented anything telling the atoms what happens when they cross
+% the boundaries of the simulation box, but we have a few options available:
+%
+% \begin{itemize}
+%  \item Reflective boundaries: A simple, but less realistic method is to simply reflect the atoms moving out of the box back in. This simulates a hard wall situated at the boundaries,
+%  and while it does conserve energy, it does a poor job of keeping the fcc structure of the system.
+%  \item Periodic boundary conditions: A more realistic option, where instead of the atoms being reflected back, they appear on the other side of the system.
+% \end{itemize}
+%
+% \textbf{BlaBla om at det også må regnes ut krefter på tvers av grensene.}
 
 
-\section*{\underline{Part 3: Let's do some science!}}
+
 
 \nocite{*}
 \printbibliography{}
