@@ -257,12 +257,21 @@ The remedy is to change units so that most quantities are close to \(1\). From~\
     \item Use Newton's third law to reduce the number of force calculations.
     \item Reproduce your results for the 2-atom model from the previous section to verify your implementation.
 \end{enumerate}
+
 As you will experience, it takes a lot longer to simulate \(N\) atoms than two --- in fact the time increases as \(N^2\). One very simple way to reduce simulation times is to look at the expression (or plot) of \(U(r)\) and see that it goes very rapidly towards zero as \(r\) increases. This means that atoms far apart interact weakly, and the forces between them can be ignored.
 
 \begin{enumerate}[label=\roman*., resume]
     \item Extend your implementation such that atoms more than \(3\sigma\) apart do not interact.
-
 \end{enumerate}
+
+\subsection{Four atoms}
+\begin{enumerate}[label=\roman*.]
+    \item Simulate the motion of four atoms starting at rest from the positions \([1,0,0]\), \([0,1,0]\), \([-1,0,0]\) and \([0,-1,0]\).
+    \item Visualise the results in Ovito, describe and explain the motion.
+    \item Plot the potential, kinetic and total energy as a function of time, and comment on the energy conservation.
+    \item Repeat the above exercises with a small perturbation in the initial positions, such that the first atom starts at \([1,0.01,0]\).
+\end{enumerate}
+
 
 \subsection{Initialisation}
 While we are interested in simulating liquid argon, which will not be in an ordered structure, the simplest choice of initial positions is a regular crystal structure. Our choice of structure is the face-centred cubic lattice, as this is the crystal structure of solid argon.
@@ -280,8 +289,12 @@ where \(i\), \(j\) and \(k\) run from \(0\) to \(N-1\) and \(d\) is the size of 
 \begin{enumerate}[label=\roman*.]
     \item Write a function which takes \(N\) and \(d\) as arguments and returns the positions of \(4N^3\) on a face-centred cubic lattice.
     \item Verify your implementation by calling your function for \(N=4\), writing the resulting positions to an \texttt{xyz}-file and looking at the result in Ovito. Your system should contain \(4\cdot4^3=256\) atoms.
+    \item Show that the unit cell size correspon
 \end{enumerate}
 
+\subsection{Many atoms}
+\begin{enumerate}[label=\roman*.]
+\end{enumerate}
 
 
 
