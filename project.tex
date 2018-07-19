@@ -231,6 +231,8 @@ The remedy is to change units so that most quantities are close to \(1\). From~\
     \item Should the total energy be conserved? Why, or why not?
     \item Does your program fulfill this? If not, what could be the cause?
     \item Simulate the same system as in~\vref{subsec:2motion} with the Euler, Euler-Cromer and Velocity Verlet algorithms for a total time \(t' = 5.0\), and compare graphs of the total energy as a function of time.
+    \item Find the largest time step that conserves energy for all three methods (fluctuations are allowed as long as they are periodic and doesn't spin out of control). Discuss your results.
+    \item Link your experimentation to a brief discussion of the pros and cons of the three methods, both physically and computationally.
 \end{enumerate}
 
 \subsection{Different motion}
@@ -255,19 +257,31 @@ The remedy is to change units so that most quantities are close to \(1\). From~\
 \begin{enumerate}[label=\roman*.]
     \item Implement a solver of~\vref{eq:undim} for \(N\) atoms, given initial positions and velocities.
     \item Use Newton's third law to reduce the number of force calculations.
-    \item Reproduce your results for the 2-atom model from the previous section to verify your implementation.
 \end{enumerate}
 As you will experience, it takes a lot longer to simulate \(N\) atoms than two --- in fact the time increases as \(N^2\). One very simple way to reduce simulation times is to look at the expression (or plot) of \(U(r)\) and see that it goes very rapidly towards zero as \(r\) increases. This means that atoms far apart interact weakly, and the forces between them can be ignored.
+\\This causes a small jump at \(r = 3\sigma\) however, since the potential at this distance is not exactly 0. The remedy here is to simply shift the whole potential by the term \(U(r=3.0)\), leading to a smooth curve up until \(r=3\sigma\).
 
 \begin{enumerate}[label=\roman*., resume]
     \item Extend your implementation such that atoms more than \(3\sigma\) apart do not interact.
+    \item Plot again \(U(r)\) and \(F(r)\). Does the shift of the potential described above impact the force calculations?
 
 \end{enumerate}
+
+\subsection{Testing/verification}
+\begin{enumerate}[label=\roman*.]
+ \item Reproduce your results for the 2-atom model from the previous section to verify your implementation.
+ \item Start with a 4-atom system. Place the atoms so that $\vec{r_1} = 2\vec{i}$, $\vec{r_2} = -2\vec{i}$, $\vec{r_3} = 2\vec{j}$ and $\vec{r_4} = -2\vec{j}$. Visualize with Ovito, and explain the results. Did the system behave as you expected?
+ \item Calculate the potential and kinetic energy of the same system, and comment on the conservation of energy.
+ \item Do the same again, but now perturb \textit{one} of the atoms, giving them a small positional component (say 0.1) in one of the directions where it originally was 0. Visualize the results,
+and describe the effect of this small perturbation. Comment again on the energy of the system.
+ 
+\end{enumerate}
+
 
 \subsection{Initialisation}
 While we are interested in simulating liquid argon, which will not be in an ordered structure, the simplest choice of initial positions is a regular crystal structure. Our choice of structure is the face-centred cubic lattice, as this is the crystal structure of solid argon.
 
-The smallest repeating unit is called a unit cell, and each unit cell contains four atoms. When creating a structure of \(N\times N\times N\) unit cells, the atoms should be placed at
+The smallest repeating unit is called a unit cell, and each unit cell contains four atoms. When creating a structure of \(n\times n\times n\) unit cells, the atoms should be placed at
 \[
     \begin{bmatrix}
         i & j & k \\
@@ -276,10 +290,10 @@ The smallest repeating unit is called a unit cell, and each unit cell contains f
         0.5+i & 0.5+j & k
     \end{bmatrix}\cdot d
 \]
-where \(i\), \(j\) and \(k\) run from \(0\) to \(N-1\) and \(d\) is the size of the unit cell. This structure will contain \(4N^3\) atoms in total.
+where \(i\), \(j\) and \(k\) run from \(0\) to \(n-1\) and \(d\) is the size of the unit cell. This structure will contain \(4n^3\) atoms in total.
 \begin{enumerate}[label=\roman*.]
-    \item Write a function which takes \(N\) and \(d\) as arguments and returns the positions of \(4N^3\) on a face-centred cubic lattice.
-    \item Verify your implementation by calling your function for \(N=4\), writing the resulting positions to an \texttt{xyz}-file and looking at the result in Ovito. Your system should contain \(4\cdot4^3=256\) atoms.
+    \item Write a function which takes \(n\) and \(d\) as arguments and returns the positions of \(4n^3\) on a face-centred cubic lattice.
+    \item Verify your implementation by calling your function for \(n=4\), writing the resulting positions to an \texttt{xyz}-file and looking at the result in Ovito. Your system should contain \(4\cdot4^3=256\) atoms.
 \end{enumerate}
 
 
