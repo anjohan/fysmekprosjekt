@@ -162,7 +162,7 @@
 % | | | | | |_| | | (_) | (_| | |_| |   <\__ \| | (_) | | | |
 % |_|_| |_|\__|_|  \___/ \__,_|\__,_|_|\_\___// |\___/|_| |_|
 %                                           |__/
-\section{Introduction}
+\section{\underline{Introduction}}
 In this project you will learn the basics of a simulation technique called molecular dynamics (MD). Molecular dynamics is a method actively used in research here at the Department of Physics, yet its basic principle can be understood and implemented with the background of a first-year physics student.
 
 Molecular dynamics is based on the assumption that even atoms move according to the laws of Newton, given the correct model for interactions. The goal of this project is to model an argon gas, where the atoms interact according to the famous Lennard-Jones potential,
@@ -210,7 +210,7 @@ The remedy is to change units so that most quantities are close to \(1\). From~\
 %  / __/  | (_| | || (_) | | | | | |  __/ |
 % |_____|  \__,_|\__\___/|_| |_| |_|\___|_|
 
-\section{Two-atom simulations}
+\section{\underline{Two-atom simulations}}
 
 \subsection{Implementation}
 \begin{enumerate}[label=\roman*.]
@@ -220,25 +220,27 @@ The remedy is to change units so that most quantities are close to \(1\). From~\
 
 \subsection{Motion}\label{subsec:2motion}
 \begin{enumerate}[label=\roman*.]
-    \item Simulate the motion of two atoms which start at rest separated by a distance of \(\num{1.5}\sigma\). Use \(\Delta t'=\num{0.01}\).
+    \item Simulate the motion of two atoms which start at rest separated by a distance of \(\num{1.5}\sigma\). Use \(\Delta t'=\num{0.01}\), \(T' = 5\), and integrate with the Euler-Cromer method.
     \item Plot the distance between the atoms as a function of time.
     \item How does the motion fit with your expectations from~\vref{subsec:understanding}?
+    \item Repeat the previous tasks, but now with an initial separation of \(\num{0.95}\sigma\). Explain your results.
 \end{enumerate}
 
 \subsection{Energy}
 \begin{enumerate}[label=\roman*.]
-    \item Plot the kinetic, potential and total energy as a function of time. Specify your choice of parameters.
-    \item Should the total energy be conserved? Why, or why not?
+    \item Plot the kinetic, potential and total energy as a function of time for the two cases in the previous section.
+    \item Theoretically speaking, should the total energy be conserved? Why, or why not? What about momentum?
     \item Does your program fulfill this? If not, what could be the cause?
-    \item Simulate the same system as in~\vref{subsec:2motion} with the Euler, Euler-Cromer and Velocity Verlet algorithms for a total time \(t' = 5.0\), and compare graphs of the total energy as a function of time.
-    \item Find the largest time step that conserves energy for all three methods (fluctuations are allowed as long as they are periodic and doesn't spin out of control). Discuss your results.
-    \item Link your experimentation to a brief discussion of the pros and cons of the three methods, both physically and computationally.
+    \item Simulate the same system as in~\vref{subsec:2motion} with the Euler, Euler-Cromer and Velocity Verlet algorithms, and compare graphs of the total energy as a function of time.
+    \item Find the largest time step that keeps stable motion and conserves energy for all three methods (fluctuations in energy are allowed as long as they are periodic and doesn't increase/decrease with time). Discuss your results.
+    \item Link your experimentation to a brief discussion of the pros and cons of the three methods, both physically and computationally. 
+    \\\\ \underline{\textbf{From here on out we're going to use the Velocity-Verlet method.}}
 \end{enumerate}
 
-\subsection{Different motion}
-\begin{enumerate}[label=\roman*.]
-    \item Repeat~\vref{subsec:2motion} with an initial separation of \(\num{0.95}\sigma\). Explain your results.
-\end{enumerate}
+%\subsection{Different motion}
+%\begin{enumerate}[label=\roman*.]
+%    \item Repeat~\vref{subsec:2motion} with an initial separation of \(\num{0.95}\sigma\). Explain your results.
+%\end{enumerate}
 
 \subsection{Visualisation}
 \begin{enumerate}[label=\roman*.]
@@ -251,7 +253,7 @@ The remedy is to change units so that most quantities are close to \(1\). From~\
 % |  \| |  / _` | __/ _ \| '_ ` _ \ / _ \ '__|
 % | |\  | | (_| | || (_) | | | | | |  __/ |
 % |_| \_|  \__,_|\__\___/|_| |_| |_|\___|_|
-\section{Large systems}
+\section{\underline{Large systems}}
 
 \subsection{Implementation}
 \begin{enumerate}[label=\roman*.]
@@ -319,13 +321,14 @@ The smallest repeating unit is called a unit cell, and each unit cell contains f
 \draw[black,fill=black] (H) circle (0.67ex);
 \draw[black,fill=black] (I) circle (0.67ex);
 \draw[black,fill=black] (J) circle (0.67ex);
-\draw[thick, dashed] (C) -- (H);
+\draw[thick] (C) -- (H);
 \draw[thick, dashed] (C) -- (I);
 \draw[thick, dashed] (C) -- (J);
 \end{tikzpicture}
     
     \]
-where \(i\), \(j\) and \(k\) run from \(0\) to \(n-1\) and \(d\) is the size of the unit cell. This structure will contain \(4n^3\) atoms in total.
+where \(i\), \(j\) and \(k\) run from \(0\) to \(n-1\) and \(d\) is the size of the unit cell. For clarity - one atom is placed at the bottom left corner of the unit cell, and the other three at 
+the center of the three connected walls (see drawing above). This structure will contain \(4n^3\) atoms in total.
 
 
 
@@ -348,10 +351,10 @@ Instead, we will model atoms which are forced to remain inside the initial box b
 Reflective boundary conditions simply means that atoms that would otherwise leave the box, are turned around.
 \begin{enumerate}[label=\roman*.]
     \item Implement reflective boundary conditions in your program.
-    \item Run a simulation with \(84\) atoms and verify visually that your implementation works.
+    \item Run a simulation with \(108\) atoms and verify visually that your implementation works.
 \end{enumerate}
 
-\section{Science}
+\section{\underline{Science}}
 By now, you will have a well-functioning (if not terribly efficient) set of tools for running molecular dynamics simulations. It is now time to apply these tools to real problems. The goal is to reproduce some of the main results from the first article containing proper molecular dynamics (``landmark simulations'' according to Wikipedia\footnote{\url{https://en.wikipedia.org/wiki/Molecular_dynamics\#History}}), written by A. Rahman in 1964\cite{Rahman_1964}.
 
 
