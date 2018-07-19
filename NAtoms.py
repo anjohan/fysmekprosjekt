@@ -49,10 +49,11 @@ def plot_LJ():
     """
 
     r = np.linspace(0.2, 3, 1001)
+    U_corr = LJ_pot(3.0)
 
     fig, (ax1, ax2) = plt.subplots(2, 1)
     ax1.set_title("Potential and Force curves of the LJ potential")
-    ax1.plot(r, LJ_pot(r))
+    ax1.plot(r, LJ_pot(r)-U_corr)
     ax1.set_ylim([-1, 3])
     ax1.set_xlabel(r"$r/\sigma$")
     ax1.set_ylabel(r"$V_{LJ}(r)$")
@@ -97,7 +98,7 @@ def fcc(nBoxes, L):
     return r
 
 
-def simulate(r0, v0, L, m, T, dt, intg, wrt_file = False):
+def simulate(r0, v0, L, T, dt, intg, m=1, wrt_file = None):
 
     """ A function for simulating the N-atom model with an integration method of choice. Stores all
     positions and velocities at every time steps in arrays. May run into memory issues.
@@ -106,11 +107,12 @@ def simulate(r0, v0, L, m, T, dt, intg, wrt_file = False):
         r0: Array with the initial condition for positions.
         v0: Array with the initial condition for velocities.
         L: Length of the sides of the simulation box.
-        m: mass of the atoms
+        m: mass of the atoms, default set to 1.
         T: The end time where the integration will stop.
         dt: Size of the time step.
         intg: String telling what method to use; either 'Euler', 'EulerCromer' og 'VelVerlet'.
-        wrt_file: Whether or not to write the position vector to an .xyz file. Default set to 'False'.
+        wrt_file: Name of the file for data to be written to. No file will be written if 'None'.
+                  Set to 'None' as default.
 
     returns:
         r: Array for posisions.
@@ -202,13 +204,13 @@ def simulate(r0, v0, L, m, T, dt, intg, wrt_file = False):
             print('Error: The variable intg must either be "Euler", "EulerCromer" or "VelVerlet".\nExiting...')
             sys.exit(0)
 
-    if wrt_file:
-        write_xyz(r)
+    if wrt_file != None:
+        write_xyz(r, wrt_file)
 
     return r, v, t
 
 
-def Energy(r, v, t, m, plot = True):
+def Energy(r, v, t, m=1, plot = True):
     """ Calculate both the kinetic and potential energies of the N-atom model from the stored
     position and velocity arrays generated in simulate().
 
@@ -276,17 +278,22 @@ def velocity_corr(v, t, plot=True):
     return v_corr
 
 
-def write_xyz(r):
+def write_xyz(r, wrt_file):
     """Write positions to .xyz file for visualization in external program (i.e. Ovito).
 
     Args:
-        r: Array with positions for all atoms at all timesteps
+        r: Array with positions for all atoms at all timesteps.
+        wrt_file: Name of the file for data to be written to.
     """
+
+    if isinstance(wrt_file, str) == False:
+        print("wrt_file must be a string! No file was written.")
+        return 
 
     nt = r.shape[0]
     N = int(r.shape[1]/3)
 
-    infile = open("in.xyz", 'w')
+    infile = open(wrt_file, 'w')
 
     for i in range(nt):
         infile.write("%i\n\n" %(N))

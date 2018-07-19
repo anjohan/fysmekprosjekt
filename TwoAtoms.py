@@ -61,18 +61,19 @@ def plot_LJ():
 
 
 
-def simulate(r0, v0, m, T, dt, intg, wrt_file = False):
+def simulate(r0, v0, T, dt, intg, m=1, wrt_file = None):
 
     """ A function for simulating the 2-atom model with an integration method of choice.
 
     Args:
         r0: Array with the initial condition for positions.
         v0: Array with the initial condition for velocities.
-        m: mass of the atoms
+        m: Mass of the atoms, default set to 1.
         T: The end time where the integration will stop.
         dt: Size of the time step.
         intg: String telling what method to use; either 'Euler', 'EulerCromer' og 'VelVerlet'.
-        wrt_file: Whether or not to write the position vector to an .xyz file. Default set to 'False'.
+        wrt_file: Name of the file for data to be written to. No file will be written if 'None'.
+                  Set to 'None' as default.
 
     returns:
         r: Array for posisions.
@@ -127,20 +128,20 @@ def simulate(r0, v0, m, T, dt, intg, wrt_file = False):
             print('Error: The variable intg must either be "Euler", "EulerCromer" or "VelVerlet".\nExiting...')
             sys.exit(0)
 
-    if wrt_file:
-        write_xyz(r)
+    if wrt_file != None:
+        write_xyz(r, wrt_file)
 
     return r, v, t
 
 
-def Energy(r, v, t, m, plot = True):
+def Energy(r, v, t, m=1, plot = True):
     """ Calculate both the kinetic and potential energies of the 2-atom model
 
     Args:
         r: Array for positions.
         v: Array for velocities.
         t: Array for the discrete time points.
-        m: Mass of the atoms.
+        m: Mass of the atoms, default set to 1.
         plot: Boolean expression, whether to plot the results or not, 'True' as default.
 
     Returns:
@@ -177,17 +178,22 @@ def Energy(r, v, t, m, plot = True):
 
     return KinEng, PotEng
 
-def write_xyz(r):
+def write_xyz(r, wrt_file):
     """Write positions to .xyz file for visualization in external program (i.e. Ovito).
 
     Args:
-        r: Array with positions for all atoms at all timesteps
+        r: Array with positions for all atoms at all timesteps.
+        wrt_file: Name of the file for data to be written to.
     """
+
+    if isinstance(wrt_file, str) == False:
+        print("Error: wrt_file must be a string! No file was written.")
+        return
 
     nt = r.shape[0]
     N = int(r.shape[1]/3)
 
-    infile = open("in.xyz", 'w')
+    infile = open(wrt_file, 'w')
 
     for i in range(nt):
         infile.write("%i\n\n" %(N))
