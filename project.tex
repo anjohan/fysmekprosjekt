@@ -233,7 +233,7 @@ The remedy is to change units so that most quantities are close to \(1\). From~\
     \item Does your program fulfill this? If not, what could be the cause?
     \item Simulate the same system as in~\vref{subsec:2motion} with the Euler, Euler-Cromer and Velocity Verlet algorithms, and compare graphs of the total energy as a function of time.
     \item Find the largest time step that keeps stable motion and conserves energy for all three methods (fluctuations in energy are allowed as long as they are periodic and doesn't increase/decrease with time). Discuss your results.
-    \item Link your experimentation to a brief discussion of the pros and cons of the three methods, both physically and computationally. 
+    \item Link your experimentation to a brief discussion of the pros and cons of the three methods, both physically and computationally.
     \\\\ \underline{\textbf{From here on out we're going to use the Velocity-Verlet method.}}
 \end{enumerate}
 
@@ -298,38 +298,36 @@ The smallest repeating unit is called a unit cell, and each unit cell contains f
 \newcommand{\Height}{2}
 \newcommand{\Width}{2}
 \tikzexternaldisable
-\begin{tikzpicture}[baseline={()}]
-\coordinate (c) at (0,0.5*\Width,0.5*\Height);
-\coordinate (O) at (0,0,0);
-\coordinate (A) at (0,\Width,0);
-\coordinate (B) at (0,\Width,\Height);
-\coordinate (C) at (0,0,\Height);
-\coordinate (D) at (\Depth,0,0);
-\coordinate (E) at (\Depth,\Width,0);
-\coordinate (F) at (\Depth,\Width,\Height);
-\coordinate (G) at (\Depth,0,\Height);
-\coordinate (H) at (\Depth/3,\Width/3,\Height/2);
-\coordinate (I) at (\Depth/10,\Width/2,\Height/1.4);
-\coordinate (J) at (\Depth/1.5,\Width/5,\Height);
-\draw[fill=whitegray!20] (O) -- (C) -- (G) -- (D) -- cycle;
-\draw[fill=gray!20] (O) -- (A) -- (E) -- (D) -- cycle;
-\draw[fill=gray!10] (O) -- (A) -- (B) -- (C) -- cycle;
-\draw[fill=gray!20,opacity=0.4] (D) -- (E) -- (F) -- (G) -- cycle;
-\draw[fill=gray!5,opacity=0.6] (C) -- (B) -- (F) -- (G) -- cycle;
-\draw[fill=gray!5,opacity=0.8] (A) -- (B) -- (F) -- (E) -- cycle;
-\draw[black,fill=black] (C) circle (0.67ex);
-\draw[black,fill=black] (H) circle (0.67ex);
-\draw[black,fill=black] (I) circle (0.67ex);
-\draw[black,fill=black] (J) circle (0.67ex);
-\draw[thick] (C) -- (H);
-\draw[thick, dashed] (C) -- (I);
-\draw[thick, dashed] (C) -- (J);
+\begin{tikzpicture}[baseline={(c)}]
+    \coordinate (c) at (0,0.5*\Width,0.5*\Height);
+    \coordinate (O) at (0,0,0);
+    \coordinate (A) at (0,\Width,0);
+    \coordinate (B) at (0,\Width,\Height);
+    \coordinate (C) at (0,0,\Height);
+    \coordinate (D) at (\Depth,0,0);
+    \coordinate (E) at (\Depth,\Width,0);
+    \coordinate (F) at (\Depth,\Width,\Height);
+    \coordinate (G) at (\Depth,0,\Height);
+    \coordinate (H) at (\Depth/3,\Width/3,\Height/2);
+    \coordinate (I) at (\Depth/10,\Width/2,\Height/1.4);
+    \coordinate (J) at (\Depth/1.5,\Width/5,\Height);
+    \draw[fill=gray!20] (O) -- (C) -- (G) -- (D) -- cycle;
+    \draw[fill=gray!20] (O) -- (A) -- (E) -- (D) -- cycle;
+    \draw[fill=gray!10] (O) -- (A) -- (B) -- (C) -- cycle;
+    \draw[fill=gray!20,opacity=0.4] (D) -- (E) -- (F) -- (G) -- cycle;
+    \draw[fill=gray!5,opacity=0.6] (C) -- (B) -- (F) -- (G) -- cycle;
+    \draw[fill=gray!5,opacity=0.8] (A) -- (B) -- (F) -- (E) -- cycle;
+    \draw[black,fill=black] (C) circle (0.67ex);
+    \draw[black,fill=black] (H) circle (0.67ex);
+    \draw[black,fill=black] (I) circle (0.67ex);
+    \draw[black,fill=black] (J) circle (0.67ex);
+    \draw (C) -- (H);
+    \draw[dashed] (C) -- (I);
+    \draw[dashed] (C) -- (J);
 \end{tikzpicture}
-    
     \]
-where \(i\), \(j\) and \(k\) run from \(0\) to \(n-1\) and \(d\) is the size of the unit cell. For clarity - one atom is placed at the bottom left corner of the unit cell, and the other three at 
-the center of the three connected walls (see drawing above). This structure will contain \(4n^3\) atoms in total.
-
+where \(i\), \(j\) and \(k\) run from \(0\) to \(n-1\) and \(d\) is the size of the unit cell. One atom is placed at the bottom left corner of the unit cell, and the other three at
+the centre of the three connected walls (see drawing above). This structure will contain \(4n^3\) atoms in total.
 
 
 \begin{enumerate}[label=\roman*.]
@@ -354,6 +352,40 @@ Reflective boundary conditions simply means that atoms that would otherwise leav
     \item Run a simulation with \(108\) atoms and verify visually that your implementation works.
 \end{enumerate}
 
+\subsection{Temperature}
+\paragraph{Measurement:} Temperature is one of the most important concepts in thermodynamics, and you will learn much more about it in FYS2160. As you may have learnt already, temperature measures the vibrations of atoms. This is formalised through the equipartition theorem, which for a monoatomic gas such as argon states that
+\[
+    \ev{K} = \tfrac{3}{2}k_\mathrm{B}T,
+\]
+where \(\ev{K}\) is the average kinetic energy, \(T\) is the temperature and \(k_\mathrm{B}\) is Boltzmann's constant. In a molecular dynamics simulation, the temperature can be calculated by using the equipartition theorem ``backwards'', i.e.
+\[
+    T = \frac{2\ev{K}}{3k_\mathrm{B}} = \frac{\ev{mv^2}}{3k_\mathrm{B}} = \frac{m}{3k_\mathrm{B}N}\sum_i v_i^2.
+\]
+The sum runs over all atoms.
+
+\paragraph{Units:} Note that since we are using reduced coordinates such as \(\vec{r}\,'=\vec{r}/\sigma\) and \(t'=t/\tau\), a direct calculation from the equation above gives a reduced temperature \(T'=T/T_0\), where \(T_0 = \varepsilon/k_\mathrm{B}=\SI{119.7}{\kelvin}\). In reduced units, the temperature expression is simplified to
+\[
+    T' = \frac{1}{3N}\sum_i v_i'^2.
+\]
+\begin{enumerate}[label=\roman*.]
+    \item Extend your implementation with the calculation of temperature.
+\end{enumerate}
+
+\paragraph{Initialisation of velocities:} Velocities in a gas are usually distributed according to a normal distribution, i.e.~a Gaussian function, as you can see in figure 1 of~\cite{Rahman_1964}. In order to initialise a system with a given temperature, each component of the velocity of each atom should be randomly chosen from a normal distribution with mean zero and standard deviation \(\sqrt{kT/m}\). The following \texttt{numpy} command achieves this in reduced units:
+\begin{lstlisting}
+v0 = np.random.normal(0, sqrt(T), size=(N,3))
+\end{lstlisting}
+
+\begin{enumerate}[label=\roman*.,resume]
+    \item Run a simulation with \(108\) atoms and an initial temperature of \(\SI{300}{\kelvin}\). Plot the temperature as a function of time.
+\end{enumerate}
+
+
+%           _
+%  ___  ___(_) ___ _ __   ___ ___
+% / __|/ __| |/ _ \ '_ \ / __/ _ \
+% \__ \ (__| |  __/ | | | (_|  __/
+% |___/\___|_|\___|_| |_|\___\___|
 \section{\underline{Science}}
 By now, you will have a well-functioning (if not terribly efficient) set of tools for running molecular dynamics simulations. It is now time to apply these tools to real problems. The goal is to reproduce some of the main results from the first article containing proper molecular dynamics (``landmark simulations'' according to Wikipedia\footnote{\url{https://en.wikipedia.org/wiki/Molecular_dynamics\#History}}), written by A. Rahman in 1964\cite{Rahman_1964}.
 
