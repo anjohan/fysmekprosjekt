@@ -309,53 +309,33 @@ This effectively sets the potential energy \(U(r)\) to be \(0\) for \(r\geq 3\si
 While we are interested in simulating liquid argon, which will not be in an ordered structure, the simplest choice of initial positions is a regular crystal structure. Our choice of structure is the face-centred cubic lattice, as this is the crystal structure of solid argon.
 
 The smallest repeating unit is called a unit cell, and each unit cell contains four atoms. When creating a structure of \(n\times n\times n\) unit cells, the atoms should be placed at
-\[
-    \begin{bmatrix}
-        i & j & k \\
-        i & 0.5+j & 0.5+k \\
-        0.5+i & j & 0.5+k \\
-        0.5+i & 0.5+j & k
-    \end{bmatrix}\cdot d\qquad \qquad\qquad
-\newcommand{\Depth}{2}
-\newcommand{\Height}{2}
-\newcommand{\Width}{2}
-\tikzexternaldisable
-\begin{tikzpicture}[baseline={(c)}]
-    \coordinate (c) at (0,0.5*\Width,0.5*\Height);
-    \coordinate (O) at (0,0,0);
-    \coordinate (A) at (0,\Width,0);
-    \coordinate (B) at (0,\Width,\Height);
-    \coordinate (C) at (0,0,\Height);
-    \coordinate (D) at (\Depth,0,0);
-    \coordinate (E) at (\Depth,\Width,0);
-    \coordinate (F) at (\Depth,\Width,\Height);
-    \coordinate (G) at (\Depth,0,\Height);
-    \coordinate (H) at (\Depth/3,\Width/3,\Height/2);
-    \coordinate (I) at (\Depth/10,\Width/2,\Height/1.4);
-    \coordinate (J) at (\Depth/1.5,\Width/5,\Height);
-    \draw[fill=gray!20] (O) -- (C) -- (G) -- (D) -- cycle;
-    \draw[fill=gray!20] (O) -- (A) -- (E) -- (D) -- cycle;
-    \draw[fill=gray!10] (O) -- (A) -- (B) -- (C) -- cycle;
-    \draw[fill=gray!20,opacity=0.4] (D) -- (E) -- (F) -- (G) -- cycle;
-    \draw[fill=gray!5,opacity=0.6] (C) -- (B) -- (F) -- (G) -- cycle;
-    \draw[fill=gray!5,opacity=0.8] (A) -- (B) -- (F) -- (E) -- cycle;
-    \draw[black,fill=black] (C) circle (0.67ex);
-    \draw[black,fill=black] (H) circle (0.67ex);
-    \draw[black,fill=black] (I) circle (0.67ex);
-    \draw[black,fill=black] (J) circle (0.67ex);
-    \draw (C) -- (H);
-    \draw[dashed] (C) -- (I);
-    \draw[dashed] (C) -- (J);
-\end{tikzpicture}
+
+\hspace{0.1\textwidth}
+\begin{minipage}{0.4\textwidth}
+    \centering
+    \hfill
+    \[
+        \begin{bmatrix}
+            i & j & k \\
+            i & 0.5+j & 0.5+k \\
+            0.5+i & j & 0.5+k \\
+            0.5+i & 0.5+j & k
+        \end{bmatrix}\cdot d\qquad \qquad\qquad
     \]
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+    \centering
+    \includegraphics{fig.pdf}
+\end{minipage}
+
 where \(i\), \(j\) and \(k\) run from \(0\) to \(n-1\) and \(d\) is the size of the unit cell. One atom is placed at the bottom left corner of the unit cell, and the other three at
 the centre of the three connected walls (see drawing above). This structure will contain \(4n^3\) atoms in total, and the total size of the simulation box will be $L^3$.
 
 
 \begin{enumerate}[label=\roman*.]
     \item Write a function which takes \(n\) and \(L\) as arguments and returns the positions of \(4n^3\) atoms on a face-centred cubic lattice.
-    \item Verify your implementation by calling your function for \(n=3\) and \(L = 20\), writing the resulting positions to an \texttt{xyz}-file and looking at the result in Ovito. Your system should contain \(4\cdot4^3=256\) atoms.
-    \item Show that the unit cell size corresponding to the density \(\rho=\SI{1.374}{\gram\per\cm\tothe3}\) is \(d=1.7 \sigma\). This will be used in the last part of this project.
+    \item Verify your implementation by calling your function for \(n=3\) and \(L = 20\), writing the resulting positions to an \texttt{xyz}-file and looking at the result in Ovito. Your system should contain \(4\cdot3^3=108\) atoms.
+    \item Show that the unit cell size corresponding to the density \(\rho=\SI{1.374}{\gram\per\cm\tothe3}\) is \(d=1.7 \sigma\). This will be used in the remaining parts of the project.
 \end{enumerate}
 
 \subsection{Many atoms, open boundary}
@@ -413,6 +393,11 @@ v0 = np.random.normal(0, sqrt(T), size=(N,3))
     \item Run a simulation with \(108\) atoms and an initial temperature of \(\SI{300}{\kelvin}\). Plot the temperature as a function of time.
 \end{enumerate}
 
+%                   __
+% __   ____ _  ___ / _|
+% \ \ / / _` |/ __| |_
+%  \ V / (_| | (__|  _|
+%   \_/ \__,_|\___|_|
 \subsection{Velocity autocorrelation and diffusion coefficient}
 The velocity autocorrelation, denoted \(A(t)\), is a measure of how similar the distribution of velocities is to the initial distribution. It is shown in figure 4 of~\cite{Rahman_1964}. \(A(t=0)=1\), since the velocity distribution at \(t=0\) \emph{is} the initial distribution, while \(A(t)\) decreases rapidly for \(t>0\) as the atoms collide with each other and the velocities become less and less similar to the initial distribution.
 
@@ -444,6 +429,14 @@ While it is not possible to integrate to \(\infty\) in a molecular dynamics simu
 \begin{enumerate}[label=\roman*.,resume]
     \item Estimate the diffusion coefficient from your previously calculated velocity autocorrelation. Compare with the result from~\cite{Rahman_1964}.
 \end{enumerate}
+
+%          _  __
+%  _ __ __| |/ _|
+% | '__/ _` | |_
+% | | | (_| |  _|
+% |_|  \__,_|_|
+\subsection{Radial distribution function}
+
 
 
 
