@@ -374,7 +374,7 @@ Reflective boundary conditions simply means that atoms that would otherwise leav
     \item Run a simulation with \(108\) atoms and verify visually that your implementation works. Give the atoms some initial velocities of your own choosing.
 \end{enumerate}
 
-\textbf{Congratulations!} You have now implemented all necessary aspects to simulating and solving a simple 'N atoms in a box'-problem. Deriving analytical expressions or implementing a solver is one thing, but actually using them to calculate properies of realistic systems is what we really aim for when studying physics. In other words, let's not stop here - let's do some science! 
+\textbf{Congratulations!} You have now implemented all necessary aspects to simulating and solving a simple 'N atoms in a box'-problem. Deriving analytical expressions or implementing a solver is one thing, but actually using them to calculate properies of realistic systems is what we really aim for when studying physics. In other words, let's not stop here - let's do some science!
 
 
 %           _
@@ -412,6 +412,44 @@ v0 = np.random.normal(0, sqrt(T), size=(N,3))
 \begin{enumerate}[label=\roman*.,resume]
     \item Run a simulation with \(108\) atoms and an initial temperature of \(\SI{300}{\kelvin}\). Plot the temperature as a function of time.
 \end{enumerate}
+
+\subsection{Velocity autocorrelation and diffusion coefficient}
+The velocity autocorrelation, denoted \(A(t)\), is a measure of how similar the distribution of velocities is to the initial distribution. It is shown in figure 4 of~\cite{Rahman_1964}. \(A(t=0)=1\), since the velocity distribution at \(t=0\) \emph{is} the initial distribution, while \(A(t)\) decreases rapidly for \(t>0\) as the atoms collide with each other and the velocities become less and less similar to the initial distribution.
+
+Mathematically, the velocity autocorrelation is defined as
+\begin{equation}
+    A(t) = \ev{\frac{\vec{v}(t)\cdot\vec{v}(0)}{\vec{v}(0)\cdot\vec{v}(0)}}
+         = \frac{1}{N} \sum_i \frac{\vec{v}_i(t)\cdot\vec{v}_i(0)}{\vec{v}_i(0)\cdot\vec{v}_i(0)},\label{eq:vacf}
+\end{equation}
+where the sum runs over all atoms.
+
+\begin{enumerate}[label=\roman*.]
+    \item Add the calculation of the velocity autocorrelation to your implementation.
+    \item Run a simulation with e.g. \(256\) atoms (more if you can), and plot the velocity autocorrelation as a function of time. Compare with figure 4 of~\cite{Rahman_1964}.
+\end{enumerate}
+
+One cause of deviations is that the initial configuration of positions and velocities (\(\vec{v}_i(0)\) in~\vref{eq:vacf}) should be an equilibrium distribution.
+\begin{enumerate}[label=\roman*.,resume]
+    \item Use the final positions and velocities from the previous simulation as initial positions and velocities for a new simulation, and calculate and plot the new velocity autocorrelation.
+    \item If your plot is very noisy (and your program does not run for too long), redo the two above simulations multiple times and average the velocity autocorrelation.
+\end{enumerate}
+
+The article also contains calculations of the diffusion coefficient \(D\), as shown in figure 3. Here, it is calculated as the slope of the mean squared displacement as a function of time. This requires periodic boundary conditions, which we have chosen to omit from this project. Fortunately, the diffusion coefficient can also be obtained from the velocity autocorrelation, via the Green-Kubo relation,
+\[
+    D = \frac{1}{3}\int_0^\infty A(t)\dd{t}.
+\]
+While it is not possible to integrate to \(\infty\) in a molecular dynamics simulation, the rapid decrease of \(\abs{A(t)}\) ensures that a finite integral will give a good approximation. Use your previous plot of \(A(t)\) to determine a reasonable upper bound.
+
+\begin{enumerate}[label=\roman*.,resume]
+    \item Estimate the diffusion coefficient from your previously calculated velocity autocorrelation. Compare with the result from~\cite{Rahman_1964}.
+\end{enumerate}
+
+
+
+
+
+
+
 
 \clearpage
 \appendix
@@ -487,119 +525,6 @@ The discretised algorithm then becomes
     \vec{v}_{i,j+1} &\approx \vec{v}_{i,j} + \tfrac{1}{2}\qty(\vec{a}_{i,j} + \vec{a}_{i,j+1})\Delta t,
 \end{alignat*}
 where \(\vec{r}_{i,j}\) is the position of atom \(i\) at timestep \(j\). In your implementation, you should avoid having to calculate the acceleration more than once per timestep.
-
-
-
-
-
-% \clearpage
-% \section*{\underline{Part 1: 2-atom model}}
-%
-% \textbf{Bare legger en liten mal her på oppgavene jeg har programmert så langt. Veldig overfladisk oppgavetekst, kan og bør endres underveis.}
-%
-% \subsection*{a)}
-%
-% Plot the LJ-potential curve. What does the different terms in the potential do?
-%
-% \subsection*{b)}
-%
-% Find the force corresponding to the potential from a), and plot the result. For what distance $r$ is this force 0? Is this force conservative? \textit{What's different with this force
-% compared to say Newton's Law of gravitation? What about the force from a spring?}
-%
-% \subsection*{c)}
-%
-% Say we place one atom at $\vec{r_1} = [0, 0, 0]$ and the other at $\vec{r_2} = [1.5, 0, 0]$, with no initial velocities. Describe qualitaively what the motions of the atoms will look like. Support your arguments with the LJ potential curve.
-%
-% If we place the second atom at $\vec{r_2} = [0.95, 0, 0]$ instead, what do you expect then? Explain by again using the potential curve from task a).
-%
-% \subsection*{d)}
-%
-% Develop a code to simulate a system of two atoms with the LJ-forces being the only ones acting. Use the Euler-Cromer integration method (?). Simulate the system with the initial conditions
-% (both cases) from task c), and plot the distance between the atoms $r$ as a function of time. What do you see?
-%
-% \subsection*{e) (optional)}
-%
-% Download a visualization tool (i.e. Ovito), and write a function that writes the positions of the atoms at every time step to a xyz.-file. Load this file into \textit{Ovito} and describe
-% what you see. Does this fit well with the assumptions you made in task c) ?
-%
-% \subsection*{f)}
-%
-% Implement different integration methods so that you have the Euler, Euler-Cromer and Velocity-Verlet methods available for your simulations. Run simulations with the same initial conditions
-% as in the first case in task c) ($\vec{r_1} = [0, 0, 0]$, $\vec{r_2} = [1.5, 0, 0]$) for all three methods, and plot the mechanical energy for all three with $\Delta t = 0.01$. Compare
-% the results for all three methods. How does these methods perform in terms of energy conservation?
-%
-% \subsection*{g) (I tvil om denne skal med)}
-%
-% Run simulations for all three methods implemented in the previous task, and find the an approximation to the largest time step ($\Delta t$) required to keep the integration from exploding.
-% Whats the difference between these methods, and why does some of them perform better than others?
-%
-%
-%
-% \section*{\underline{Part 2: N-atom model}}
-%
-% \subsection*{h)}
-%
-% Generalize the program you wrote in the previous part for any number of atoms, $N$. Computing time increases drastically with system size, so some precautions should be made:
-%
-% \begin{itemize}
-%   \item Pair-wise forces: The LJ-potential describes forces \textit{between} atoms, meaning that the forces acting on atom $i$ from atom $j$ is the same as the forces acting on atom $j$
-%   from atom $i$, just with opposite signs. Realizing this can cut the computations in half, in contrary to computing the same force twice.
-%   \item Hopefully when you plotting the LJ-potential earlier you saw that the forces converge towards 0 as $r \rightarrow \infty$. This means that atoms that are far away from each other
-%   share little to none influence, and are basically neglectable. Computing the forces between these atoms are hence a waste of computing power, and can be ignored by implementing a cut-off
-%   length - If the atoms are further away than this length, the forces are set to 0. For the LJ-potential this cut-off is usually set to 3.0 (LJ units).
-%   \textbf{Note:} The LJ-force at $r = 3.0\sigma$ is NOT exactly 0, meaning that with the cut-off implemented, the potential curve will do a small 'jump' at this point (messing up the
-%   conservation of energy, etc).
-%   A solution to this is to simply shift the whole potential curve by the value at the cut-off point, leading to a smooth curve (no jumps) with 0 forces at cut-off.
-%   \item Due to memory restrictions it may be a bad idea to keep positions and velocities for all time steps stored in arrays. MD-simulations typically need large system sizes ($N$)
-%   and small time steps ($dt$) to create decent results, potentially leading to really huge matrices. For the simulations we'll do in this project we \textit{probably} won't need blue-screen
-%   inducing matrices (depending on the memory resources you have available), but if you're going to experiment further with different time steps and system sizes this \textit{may} become
-%   a problem. A solution here is to just keep positions and velocities for two time steps at a time, and write out the data to a text-file instead. This way there is no memory constraints,
-%   only on your patience waiting for the simulations to complete.
-%
-% \end{itemize}
-%
-% Reproduce the results from the two-atom case with the generalized code for verification.
-%
-% \subsection*{i)}
-%
-% Start with a 4-atom system. Place the atoms so that $\vec{r_1} = 2\vec{i}$, $\vec{r_2} = -2\vec{i}$, $\vec{r_3} = 2\vec{j}$ and $\vec{r_4} = -2\vec{j}$. Compare with the experiment with two atoms
-% from earlier. What do you see? Visualize with Ovito, and explain the results. Calculate the potential and kinetic energy of the system, and comment on the conservation of energy.
-%
-% \subsection*{j)}
-%
-% Do the same again, but now perturb \textit{one} of the atoms, giving them a small positional component (say 0.1) in one of the directions where it originally was 0. Visualize the results,
-% and describe the effect of this small perturbation. Comment again on the energy of the system.
-%
-% \subsection*{k)}
-%
-% If you have played around with different $N$s and $dt$s you've probably seen that this system isn't very stable - the atoms start spreading around outside the initial box, and some might really gain speed and
-% aim for infinity and beyond (especially if the initial positions are generated randomly). This is mainly due to two parts still missing: good initialization and boundary conditions on
-% the simulation box boundaries. We will first implement the former:
-%
-% It might seem like a reasonable idea to initialize the atoms uniformly in the simulation box by splitting the simulation box into $N$ smaller, equally sized boxes (called \textit{unit boxes}), and
-% putting one atom at the center of each box (and to some extent this is reasonable). It can be shown however that the equilibrium state of a system of atoms interacting with a LJ-potential
-% doesn't prefer this simple cubic structure, but rather a face-centered cubic structure (fcc). Instead of having just one atom in each unit box, we instead have \textit{four}, which
-% practically means that the number of atoms in the system should be a multiple of 4. In this structure, one atom is attached to the one of the corners of the unit box, and the other three are
-% put at the center of the three walls connected to this first atom (see drawing).
-%
-% \textbf{Put drawing here}
-%
-% Write a function that generates this structure - visualize with a small system to see that the implementation is working as intended.
-%
-% \subsection*{l)}
-%
-% The main reason that atoms occasionally escapes the system is the obvious one - we are allowing them to. In a MD-simulation we're for the most part simulating the behaviour of a \textit{tiny}
-% part of a much larger material, so the box we're simulating will in reality be surrounded by other similar boxes. So far we've not implemented anything telling the atoms what happens when they cross
-% the boundaries of the simulation box, but we have a few options available:
-%
-% \begin{itemize}
-%  \item Reflective boundaries: A simple, but less realistic method is to simply reflect the atoms moving out of the box back in. This simulates a hard wall situated at the boundaries,
-%  and while it does conserve energy, it does a poor job of keeping the fcc structure of the system.
-%  \item Periodic boundary conditions: A more realistic option, where instead of the atoms being reflected back, they appear on the other side of the system.
-% \end{itemize}
-%
-% \textbf{BlaBla om at det også må regnes ut krefter på tvers av grensene.}
-
 
 
 
