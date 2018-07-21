@@ -77,8 +77,8 @@
 \definecolor{bluekeywords}{rgb}{0.13,0.13,1}
 \definecolor{greencomments}{rgb}{0,0.5,0}
 \definecolor{redstrings}{rgb}{0.9,0,0}
-\lstset{rangeprefix=!/,
-    rangesuffix=/!,
+\lstset{rangeprefix=\#!,
+    rangesuffix=!\#,
     includerangemarker=false}
 \renewcommand{\lstlistingname}{Kodesnutt}
 \lstset{showstringspaces=false,
@@ -88,8 +88,8 @@
     numberstyle=\color{bluekeywords},
     stringstyle=\color{redstrings},
     breaklines=true,
-    %texcl=true,
-    language=Fortran
+    texcl=true,
+    language=Python
 }
 \colorlet{DarkGrey}{white!20!black}
 \newcommand{\eqtag}[1]{\refstepcounter{equation}\tag{\theequation}\label{#1}}
@@ -328,7 +328,7 @@ The smallest repeating unit is called a unit cell, and each unit cell contains f
     \includegraphics{fig.pdf}
 \end{minipage}
 
-where \(i\), \(j\) and \(k\) run from \(0\) to \(n-1\) and \(d\) is the size of the unit cell. One atom is placed at the bottom left corner of the unit cell, and the other three at
+where \(i\), \(j\) and \(k\) run from \(0\) to \(n-1\) and \(d\) is the size of one unit cell. One atom is placed at the bottom left corner of the unit cell, and the other three at
 the centre of the three connected walls (see drawing above). This structure will contain \(4n^3\) atoms in total, and the total size of the simulation box will be $L^3$.
 
 
@@ -436,7 +436,15 @@ While it is not possible to integrate to \(\infty\) in a molecular dynamics simu
 % | | | (_| |  _|
 % |_|  \__,_|_|
 \subsection{Radial distribution function}
-
+The radial distribution function \(g(r)\) shown in figure 2 of~\cite{Rahman_1964} describes the distribution of distances between an atom and its neighbours. It is defined as the ratio of the density at a distance \(r\) from an atom divided by the average density, i.e.
+\begin{equation}
+    g(r) = \frac{V}{N} \frac{n(r)}{4\pi r^2\Delta r},\label{eq:rdf}
+\end{equation}
+where \(V\) is the total volume, \(N\) the total number of particles and \(n(r)\) the average number of particles at a distance between \(r\) and \(r+\Delta r\). \(g(r)\) should be calculated for all atoms and then averaged. An example implementation is given below. The output should be averaged over many timesteps for a smooth result. Note that while \(g(r)\) should approach \(1\) when \(r\to\infty\) in bulk, the finite system size causes \(g(r)\) to decay for large \(r\).
+\begin{enumerate}[label=\roman*.]
+    \item Run  a simulation with as many atoms for as long as you can. Calculate the radial distribution function \(g(r)\), plot the result and compare with figure 2 of~\cite{Rahman_1964}.
+\end{enumerate}
+\lstinputlisting[linerange={rdfstart-rdfend}]{rdf.py}
 
 
 

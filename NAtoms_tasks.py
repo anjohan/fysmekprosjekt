@@ -81,16 +81,17 @@ def many_atoms():
 
 def boundary_conditions():
 
-    L = 15
-    T = 10
+    L = 6.8
+    T = 3
     dt = 0.01
     nt = int(T/dt) + 1
 
-    r0 = fcc(3, L)
+    r0 = fcc(4, L)
 
     v0 = np.random.uniform(-2, 2, size=(len(r0)))
 
     r, v, t = simulate(r0, v0, L, T, dt, 'VelVerlet', wrt_file= 'bc.xyz')
+    return r,v,t
 
 
 def test_vel():
@@ -162,6 +163,6 @@ if __name__ == "__main__":
     #verification()
     #initialization()
     #many_atoms()
-    #boundary_conditions()
-    test_vel()
+    boundary_conditions()
+    #test_vel()
     #test_rdf()
