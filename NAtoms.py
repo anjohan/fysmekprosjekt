@@ -20,10 +20,20 @@ def LJ_pot(r, epsilon=1, sigma=1):
     Returns:
         The computed potential between the atoms given as input.
     """
-    if r < 3.0:
-        return 4*epsilon*((sigma/r)**12 - (sigma/r)**6)
-    else:
-        return 0
+    if isinstance(r, np.ndarray):
+
+        pot = np.zeros_like(r)
+        r_where = np.where(r < 3.0)
+        pot[r_where] = 4*epsilon*((sigma/r[r_where])**12 - (sigma/r[r_where])**6)
+        return pot
+
+    elif np.isscalar(r):
+
+        if r < 3.0:
+            return 4*epsilon*((sigma/r)**12 - (sigma/r)**6)
+        else:
+            return 0
+
 
 def LJ_force(r, epsilon=1, sigma=1):
     """Function for computing the forces of the Lennard-Jones Potential.
@@ -36,10 +46,20 @@ def LJ_force(r, epsilon=1, sigma=1):
     Returns:
         The computed forces between the atoms given as input.
     """
-    if r < 3.0:
-        return 24*epsilon/r*(2*(sigma/r)**12 - (sigma/r)**6)
-    else:
-        return 0
+
+    if isinstance(r, np.ndarray):
+
+        F = np.zeros_like(r)
+        r_where = np.where(r < 3.0)
+        F[r_where] = 24*epsilon/r[r_where]*(2*(sigma/r[r_where])**12 - (sigma/r[r_where])**6)
+        return F
+
+    elif np.isscalar(r):
+
+        if r < 3.0:
+            return 24*epsilon/r*(2*(sigma/r)**12 - (sigma/r)**6)
+        else:
+            return 0
 
 
 def plot_LJ():
@@ -98,7 +118,7 @@ def fcc(nBoxes, L):
     return r
 
 
-def simulate(r0, v0, L, T, dt, intg, m=1, wrt_file = None):
+def simulate(r0, v0, L, T, dt, intg, m=1, boundary = True, wrt_file = None):
 
     """ A function for simulating the N-atom model with an integration method of choice. Stores all
     positions and velocities at every time steps in arrays. May run into memory issues.
@@ -111,6 +131,7 @@ def simulate(r0, v0, L, T, dt, intg, m=1, wrt_file = None):
         T: The end time where the integration will stop.
         dt: Size of the time step.
         intg: String telling what method to use; either 'Euler', 'EulerCromer' og 'VelVerlet'.
+        boundary: Whether to use boundary conditions or not, True as default.
         wrt_file: Name of the file for data to be written to. No file will be written if 'None'.
                   Set to 'None' as default.
 
@@ -153,27 +174,30 @@ def simulate(r0, v0, L, T, dt, intg, m=1, wrt_file = None):
 
             a = F/m
 
+
         if intg == 'Euler':
             v[i+1] = v[i] + a*dt
             r[i+1] = r[i] + v[i]*dt
 
-            # Reflective boundary conditions
-            out = ((L < r[i+1]) + (r[i+1] < 0))*1
-            out[out==1] = -1
-            out[out==0] = 1
-            v[i+1] = v[i+1]*out
-            #r[i+1] = r[i] + v[i+1]*dt
+            if boundary:
+                # Reflective boundary conditions
+                out = ((L < r[i+1]) + (r[i+1] < 0))*1
+                out[out==1] = -1
+                out[out==0] = 1
+                v[i+1] = v[i+1]*out
+                #r[i+1] = r[i] + v[i+1]*dt
 
         elif intg == 'EulerCromer':
             v[i+1] = v[i] + a*dt
             r[i+1] = r[i] + v[i+1]*dt
 
-            # Reflective boundary conditions
-            out = ((L < r[i+1]) + (r[i+1] < 0))*1
-            out[out==1] = -1
-            out[out==0] = 1
-            v[i+1] = v[i+1]*out
-            #r[i+1] = r[i] + v[i+1]*dt
+            if boundary:
+                # Reflective boundary conditions
+                out = ((L < r[i+1]) + (r[i+1] < 0))*1
+                out[out==1] = -1
+                out[out==0] = 1
+                v[i+1] = v[i+1]*out
+                #r[i+1] = r[i] + v[i+1]*dt
 
         elif intg == 'VelVerlet':
             r[i+1] = r[i] + v[i]*dt + 0.5*a*dt**2
@@ -193,12 +217,13 @@ def simulate(r0, v0, L, T, dt, intg, m=1, wrt_file = None):
 
             v[i+1] = v[i] + 0.5*(a + a_next)*dt
 
-            # Reflective boundary conditions
-            out = ((L < r[i+1]) + (r[i+1] < 0))*1
-            out[out==1] = -1
-            out[out==0] = 1
-            v[i+1] = v[i+1]*out
-            #r[i+1] = r[i] + v[i+1]*dt
+            if boundary:
+                # Reflective boundary conditions
+                out = ((L < r[i+1]) + (r[i+1] < 0))*1
+                out[out==1] = -1
+                out[out==0] = 1
+                v[i+1] = v[i+1]*out
+                #r[i+1] = r[i] + v[i+1]*dt
 
         else:
             print('Error: The variable intg must either be "Euler", "EulerCromer" or "VelVerlet".\nExiting...')
@@ -234,7 +259,16 @@ def Energy(r, v, t, m=1, plot = True):
     # Correction to potential energy due to cut-off
     U_corr = 4*((3.0)**(-12) - (3.0)**(-6))
 
-    for i in range(nt):
+    for i in tqdm(range(1, N)):
+        r_abs = r[:, 3*i:] - r[:, :-3*i]
+        r_abs = np.sqrt(np.add.reduceat(r_abs**2, np.arange(0, r_abs.shape[1], 3), axis=1))
+
+        PotEng += np.sum(LJ_pot(r_abs) - U_corr, axis=1)
+
+    KinEng = 0.5*m*np.sum(v**2, axis=1)
+
+    """
+    for i in tqdm(range(nt)):
         for j in range(N):
             v_abs2 = np.sum(v[i, 3*j:3*j + 3]**2)
             KinEng[i] += 0.5*m*v_abs2
@@ -243,7 +277,7 @@ def Energy(r, v, t, m=1, plot = True):
 
                 d = np.sqrt(np.sum((r[i, 3*j: 3*j +3] - r[i, 3*k: 3*k +3])**2))
                 PotEng[i] += LJ_pot(d) - U_corr
-
+    """
     if plot:
         fig, (ax1, ax2) = plt.subplots(2, 1)
         ax1.set_title("Kinetic and Potential energy of the " + str(N) + "-atom system")
@@ -262,20 +296,96 @@ def Energy(r, v, t, m=1, plot = True):
     return KinEng, PotEng
 
 def velocity_corr(v, t, plot=True):
+    """ Calculates the velocity auto-correlation function.
 
-    nt = len(t)
-    N = v.shape[1]
+    Args:
+        v: Array with velocities at all time steps.
+        t: Array with the discrete time points.
+        plot: Whether to plot the result or not, default set as True.
+
+    Returns:
+        v_corr: Computed auto-correlation at each time step.
+    """
+
+    N = int(v.shape[1]/3)
+
+    v = v[int(len(t)/2):, :]
+    nt = v.shape[0]
     v_corr = np.zeros(nt)
 
+
+    #v2 = v.reshape((nt,N,3))
+    #v02 = v[0].reshape((N,3))
+
+    v02 = np.add.reduceat(v[0]*v[0], np.arange(0, 3*N, 3))
+
     for i in range(nt):
-        v_corr[i] = np.dot(v[0], v[i])
+        #v_corr[i] = np.sum(np.sum(v2[i]*v02,axis=1)/np.sum(v02**2,axis=1))
+
+        v_corr[i] = np.sum(np.add.reduceat(v[0]*v[i], np.arange(0, 3*N, 3))/v02)
+
+        #v_corr[i] = np.dot(v[0], v[i])/(N*np.dot(v_corr[0=], v_corr[0]))
     v_corr /= N
 
     if plot:
         plt.plot(t, v_corr)
+        plt.xlabel(r'$t$')
+        plt.ylabel(r'$\langle v(0) \cdot v(t) \rangle$')
+        plt.title("Velocity auto-correlation function")
+        plt.grid(True)
         plt.show()
 
+
     return v_corr
+
+def rdf(r, L):
+    """ Computes the radial distribution function.
+
+    Args:
+        r: Array with positions at all time steps.
+        L: Length of one each side of the simulation box.
+
+    Returns:
+        hist: Histogram (rdf) for at all timesteps.
+    """
+
+    N = int(r.shape[1]/3)
+    nt = r.shape[0]
+
+    bins = np.linspace(0, 5.0, 201)
+    bin_cen = (bins[1:] + bins[:-1])/2
+    dr = bin_cen[1] - bin_cen[0]
+    hist = np.zeros((nt, len(bins)-1))
+
+    norm = (L**3/N**2)/(4*np.pi*bin_cen**2*dr)
+
+    for i in tqdm(range(1, N)):
+        r_abs = r[:, 3*i:] - r[:, :-3*i]
+        r_abs = np.sqrt(np.add.reduceat(r_abs**2, np.arange(0, r_abs.shape[1], 3), axis=1))
+
+        for j in range(nt):
+            hist_j, edges = np.histogram(r_abs[j], bins)
+            hist[j] += hist_j*norm
+
+    rdf = np.sum(hist[int(nt/2):, :], axis=0)/int(nt/2)
+
+    plt.plot(bin_cen, hist[0])
+    plt.xlabel(r"$r$")
+    plt.ylabel(r"$g(r)$")
+    plt.title("Radial distribution function at t'=0")
+    plt.grid(True)
+    plt.show()
+
+    plt.plot(bin_cen, rdf)
+    plt.xlabel(r"$r$")
+    plt.ylabel(r"$\langle g(r) \rangle$")
+    plt.title("Radial distribution function averaged over time")
+    plt.grid(True)
+    plt.show()
+
+
+
+    return hist
 
 
 def write_xyz(r, wrt_file):
@@ -288,7 +398,7 @@ def write_xyz(r, wrt_file):
 
     if isinstance(wrt_file, str) == False:
         print("wrt_file must be a string! No file was written.")
-        return 
+        return
 
     nt = r.shape[0]
     N = int(r.shape[1]/3)
