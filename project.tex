@@ -154,7 +154,29 @@
 
 \pagestyle{fancy}
 \setcounter{page}{1}
+\setcounter{section}{-1}
 
+
+
+\section{\underline{Preface}}
+
+\textbf{(Forslag til punkter som kan være med i forordet; advarsler, motivasjoner, etc.}
+
+- This project is computationally more demanding than the regular 'obligs'. It is aimed at challenging those who feel comfortable with programming - if you're not one of them, it may be smarter to do the regular obligs instead.\\
+- Completion of the whole project will count as 3 regular obligs. Completion of parts 2,3 and 4 will count as one oblig each.\\
+- Although it may replace up to 3 obligs, it does \textit{not} prepare you for the exams alone. It's highly recommended that you do the weekly exercises as well, and maybe even glimpse on the other obligs given.\\
+- The work load may be quite large and time consuming, so don't hesitate to ask teachers or other co-students for help if you get stuck.\\
+- Programs for parts 3 and 4 may run for many minutes (some for hours), depending on the computing power available and the efficiency of your implementations. We urge you to vectorize you code as much as possible. A tip is to be time efficient, and work on your report or some of the other exercises while the computer is working on the heavier tasks.\\
+- Motivation: While the project is more demanding and possibly more rage-inducing, it also aims to give a bigger sense of doing actual science - The last part tasks you to recreate results from the very first paper published on molecular dynamics simulations, all by implementing simple mechanics taught in this course.
+
+- Modules and software needed:
+\begin{itemize}
+ \item Python/Matlab, or lower lever languages like C++ or Fortran. The TA's need to know the languages, so we'll restrict the choice of language to these four for now.
+ \item Ovito, or some other visualisation software. A 'How-to' for Ovito is given in \vref{app:ovito}.
+\end{itemize}
+
+
+\newpage
 
 %  _       _                 _       _         _
 % (_)_ __ | |_ _ __ ___   __| |_   _| | _____ (_) ___  _ __
@@ -169,7 +191,7 @@ Molecular dynamics is based on the assumption that even atoms move according to 
 \begin{equation}
     U(r) = 4\varepsilon\qty(\qty(\frac{\sigma}{r})^{12} - \qty(\frac{\sigma}{r})^6), \label{eq:lj}
 \end{equation}
-where \(r\) is the distance between two atoms, \(r=\norm{\vec{r}_i-\vec{r}_j}\). \(\sigma\) and \(\varepsilon\) are a parameters which determine which chemical compound is modelled. This potential is a good approximation for noble gases.
+where \(r\) is the distance between two atoms, \(r=\norm{\vec{r}_i-\vec{r}_j}\). \(\sigma\) and \(\varepsilon\) are parameters which determine which chemical compound is modelled. This potential is a good approximation for noble gases.
 
 \subsection{Understanding the potential}\label{subsec:understanding}
 \begin{enumerate}[label=\roman*.]
@@ -280,7 +302,7 @@ This effectively sets the potential energy \(U(r)\) to be \(0\) for \(r\geq 3\si
     \item Simulate the motion of four atoms starting at rest from the positions \([1,0,0]\), \([0,1,0]\), \([-1,0,0]\) and \([0,-1,0]\).
     \item Visualise the results in Ovito, describe and explain the motion.
     \item Plot the potential, kinetic and total energy as a function of time, and comment on the energy conservation.
-    \item Repeat the above exercises with a small perturbation in the initial positions, such that the first atom starts at \([1,0.01,0]\).
+    \item Repeat the above exercises with a small perturbation in the initial positions, such that the first atom starts at \([1,0.1,0]\).
 \end{enumerate}
 
 \subsection{Initialisation}
@@ -327,13 +349,13 @@ The smallest repeating unit is called a unit cell, and each unit cell contains f
 \end{tikzpicture}
     \]
 where \(i\), \(j\) and \(k\) run from \(0\) to \(n-1\) and \(d\) is the size of the unit cell. One atom is placed at the bottom left corner of the unit cell, and the other three at
-the centre of the three connected walls (see drawing above). This structure will contain \(4n^3\) atoms in total.
+the centre of the three connected walls (see drawing above). This structure will contain \(4n^3\) atoms in total, and the total size of the simulation box will be $L^3$.
 
 
 \begin{enumerate}[label=\roman*.]
-    \item Write a function which takes \(n\) and \(d\) as arguments and returns the positions of \(4n^3\) atoms on a face-centred cubic lattice.
-    \item Verify your implementation by calling your function for \(n=4\), writing the resulting positions to an \texttt{xyz}-file and looking at the result in Ovito. Your system should contain \(4\cdot4^3=256\) atoms.
-    \item Show that the unit cell size corresponding to the correct density \(\rho=\SI{1.374}{\gram\per\cm\tothe3}\) is \(d=1.7 \sigma\).
+    \item Write a function which takes \(n\) and \(L\) as arguments and returns the positions of \(4n^3\) atoms on a face-centred cubic lattice.
+    \item Verify your implementation by calling your function for \(n=3\) and \(L = 20\), writing the resulting positions to an \texttt{xyz}-file and looking at the result in Ovito. Your system should contain \(4\cdot4^3=256\) atoms.
+    \item Show that the unit cell size corresponding to the density \(\rho=\SI{1.374}{\gram\per\cm\tothe3}\) is \(d=1.7 \sigma\). This will be used in the last part of this project.
 \end{enumerate}
 
 \subsection{Many atoms, open boundary}
@@ -343,14 +365,25 @@ the centre of the three connected walls (see drawing above). This structure will
 \end{enumerate}
 
 \subsection{Boundary conditions}
-In the previous exercise, you probably observed that the atoms immediately spread out into a large volume, possibly with some continuing to infinity (and beyond). This is not the behaviour we want. Ideally, we would like to model the bulk behaviour of argon by the use of periodic boundary conditions, but the implementation of this is a bit finicky.
+In the previous exercise, you probably observed that the atoms immediately spread out into a large volume, possibly with some continuing to infinity (and beyond). This is not the behaviour we want. Ideally, we would like to model the bulk behaviour of argon by the use of periodic boundary conditions, but the implementation of this is a bit finicky (and very slow if not implemented efficiently).
 
 Instead, we will model atoms which are forced to remain inside the initial box by the use of reflective boundary conditions. This gives reasonable results for the quantities that we want to measure.
 Reflective boundary conditions simply means that atoms that would otherwise leave the box, are turned around.
 \begin{enumerate}[label=\roman*.]
     \item Implement reflective boundary conditions in your program.
-    \item Run a simulation with \(108\) atoms and verify visually that your implementation works.
+    \item Run a simulation with \(108\) atoms and verify visually that your implementation works. Give the atoms some initial velocities of your own choosing.
 \end{enumerate}
+
+\textbf{Congratulations!} You have now implemented all necessary aspects to simulating and solving a simple 'N atoms in a box'-problem. Deriving analytical expressions or implementing a solver is one thing, but actually using them to calculate properies of realistic systems is what we really aim for when studying physics. In other words, let's not stop here - let's do some science! 
+
+
+%           _
+%  ___  ___(_) ___ _ __   ___ ___
+% / __|/ __| |/ _ \ '_ \ / __/ _ \
+% \__ \ (__| |  __/ | | | (_|  __/
+% |___/\___|_|\___|_| |_|\___\___|
+\section{\underline{Science}}
+By now, you will have a well-functioning (if not terribly efficient) set of tools for running molecular dynamics simulations. It is now time to apply these tools to real problems. The goal is to reproduce some of the main results from the first article containing proper molecular dynamics (``landmark simulations'' according to Wikipedia\footnote{\url{https://en.wikipedia.org/wiki/Molecular_dynamics\#History}}), written by A. Rahman in 1964\cite{Rahman_1964}.
 
 \subsection{Temperature}
 \paragraph{Measurement:} Temperature is one of the most important concepts in thermodynamics, and you will learn much more about it in FYS2160. As you may have learnt already, temperature measures the vibrations of atoms. This is formalised through the equipartition theorem, which for a monoatomic gas such as argon states that
@@ -380,16 +413,6 @@ v0 = np.random.normal(0, sqrt(T), size=(N,3))
     \item Run a simulation with \(108\) atoms and an initial temperature of \(\SI{300}{\kelvin}\). Plot the temperature as a function of time.
 \end{enumerate}
 
-
-%           _
-%  ___  ___(_) ___ _ __   ___ ___
-% / __|/ __| |/ _ \ '_ \ / __/ _ \
-% \__ \ (__| |  __/ | | | (_|  __/
-% |___/\___|_|\___|_| |_|\___\___|
-\section{\underline{Science}}
-By now, you will have a well-functioning (if not terribly efficient) set of tools for running molecular dynamics simulations. It is now time to apply these tools to real problems. The goal is to reproduce some of the main results from the first article containing proper molecular dynamics (``landmark simulations'' according to Wikipedia\footnote{\url{https://en.wikipedia.org/wiki/Molecular_dynamics\#History}}), written by A. Rahman in 1964\cite{Rahman_1964}.
-
-
 \clearpage
 \appendix
 \section*{Appendix}
@@ -408,12 +431,12 @@ The \texttt{xyz}-format is a semi-standard format for storing data from molecula
 \begin{itemize}
     \item A line containing the number of atoms (an integer).
     \item An ignored line (this line is usually written as a header for the subsequent columns).
-    \item One line for each atom, containing the atom type and the \(x\)-, \(y\)- and \(z\)-koordinates.
+    \item One line for each atom, containing the atom type and the \(x\)-, \(y\)- and \(z\)-coordinates.
 \end{itemize}
 For two atoms simulated over three timesteps, where \texttt{xij} represents the \(x\)-coordinate of atom \(j\) at timestep \(i\), the file would look like this:
 \begin{lstlisting}[language=]
     2
-    type  x   y   z
+    type  x   y   z     <--- This line is a read as a comment, and is thus ignored.
     Ar   x11 y11 z11
     Ar   x12 y12 z12
     2
