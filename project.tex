@@ -65,7 +65,6 @@
 \labelformat{figure}{figure~#1}
 \labelformat{table}{table~#1}
 
-\renewcommand{\footrulewidth}{\headrulewidth}
 
 %\setcounter{secnumdepth}{4}
 \renewcommand{\thesection}{Part \arabic{section}}
@@ -80,7 +79,6 @@
 \lstset{rangeprefix=\#!,
     rangesuffix=!\#,
     includerangemarker=false}
-\renewcommand{\lstlistingname}{Kodesnutt}
 \lstset{showstringspaces=false,
     basicstyle=\small\ttfamily,
     keywordstyle=\color{bluekeywords},
@@ -104,9 +102,11 @@
 \allowdisplaybreaks[4]
 \fancyhf{}
 
-\rhead{MD-Project}
+% \rhead{MD-Project}
 \rfoot{Page~\thepage{} of~\pageref{LastPage}}
-\lhead{FYS-MEK1110}
+% \lhead{FYS-MEK1110}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{\headrulewidth}
 
 %\definecolor{gronn}{rgb}{0.29, 0.33, 0.13}
 \definecolor{gronn}{rgb}{0, 0.5, 0}
@@ -114,17 +114,6 @@
 \newcommand{\husk}[2]{\tikz[baseline,remember picture,inner sep=0pt,outer sep=0pt]{\node[anchor=base] (#1) {\(#2\)};}}
 \newcommand{\artanh}[1]{\operatorname{artanh}{\qty(#1)}}
 \newcommand{\matrise}[1]{\begin{pmatrix}#1\end{pmatrix}}
-
-
-\pgfplotstableset{1000 sep={\,},
-                      assign column name/.style={/pgfplots/table/column name={\multicolumn{1}{c}{#1}}},
-                      every head row/.style={before row=\toprule,after row=\midrule},
-                      every last row/.style={after row=\bottomrule},
-                      columns/n/.style={column name={\(n^*\)},column type={r}},
-                      columns/N/.style={column name={\(N\)},sci},
-                      columns/logN/.style={column name={\(\log(N)\)}},
-                      columns/logn/.style={column name={\(\log(n^*)\)}}
-                      }
 
 \newread\infile
 
@@ -138,10 +127,12 @@
 \begin{center}
 \textsf{
     \Huge \textbf{Molecular Dynamics Project}\\\vspace{0.5cm}
-    \Large \textbf{FYS-MEK1110 - Mechanics}\\
+    \Large \textbf{FYS-MEK1110 --- Mechanics}\\
     \vspace{8cm}
-    Tommy Myrvik and Anders Johansson\\
-    \today\\
+    \begin{tabular}{lr}
+        Deadline: & 30th February 2019\\
+        Last updated: & \today
+    \end{tabular}\\
 }
 \vspace{1.5cm}
 \includegraphics{uio.pdf}\\
@@ -156,27 +147,29 @@
 \setcounter{page}{1}
 \setcounter{section}{-1}
 
+\section{\underline{Practical information}}
+This project is meant as a more challenging alternative to the first three mandatory assignments for those who feel that they already have a good grasp of high school physics, basic scientific programming and the Forward Euler method. The workload is (hopefully) approximately equal to the combined workload of the first three assignments.
 
+A special weekly group session will focus on this project, where you can discuss with fellow students and get help from teaching assistants. Additionally, you are encouraged to use the Piazza platform for asking your own questions and answering the questions of other students.
 
-\section{\underline{Preface}}
+If you at some point find that this project is too difficult or time-consuming for you, the work you have already done may replace one or two normal assignments depending on how far you have come. Let us know, and we will find a solution.
 
-\textbf{(Forslag til punkter som kan være med i forordet; advarsler, motivasjoner, etc.}
+Since this project dives deeply into one subject, it touches on fewer topics from the syllabus than the ordinary assignments. If you choose to do this project, it is therefore especially important that you also do the weekly exercises and attend normal group sessions.
 
-- This project is computationally more demanding than the regular 'obligs'. It is aimed at challenging those who feel comfortable with programming - if you're not one of them, it may be smarter to do the regular obligs instead.\\
-- Completion of the whole project will count as 3 regular obligs. Completion of parts 2,3 and 4 will count as one oblig each.\\
-- Although it may replace up to 3 obligs, it does \textit{not} prepare you for the exams alone. It's highly recommended that you do the weekly exercises as well, and maybe even glimpse on the other obligs given.\\
-- The work load may be quite large and time consuming, so don't hesitate to ask teachers or other co-students for help if you get stuck.\\
-- Programs for parts 3 and 4 may run for many minutes (some for hours), depending on the computing power available and the efficiency of your implementations. We urge you to vectorize you code as much as possible. A tip is to be time efficient, and work on your report or some of the other exercises while the computer is working on the heavier tasks.\\
-- Motivation: While the project is more demanding and possibly more rage-inducing, it also aims to give a bigger sense of doing actual science - The last part tasks you to recreate results from the very first paper published on molecular dynamics simulations, all by implementing simple mechanics taught in this course.
+Python and Matlab are the natural choices of programming language for this project. You are allowed to choose any other language, especially fast languages such as Fortran and C++, but you cannot expect all teaching assistants to know all programming languages.
 
-- Modules and software needed:
+When writing your programs, you should keep two things in mind:
 \begin{itemize}
- \item Python/Matlab, or lower lever languages like C++ or Fortran. The TA's need to know the languages, so we'll restrict the choice of language to these four for now.
- \item Ovito, or some other visualisation software. A 'How-to' for Ovito is given in \vref{app:ovito}.
+    \item Reusability: This project contains many exercises, but most of them are variants of or build upon earlier exercises, so you will save a lot of time if your implementation is easy to extend or adapt to a new problem.
+    \item Efficiency: The two last parts of the project require larger simulations which will run for hours (or even days) if your program is slow. Try therefore to think of efficiency, and use vectorised operations with Numpy arrays whenever possible. Use your own time wisely as well, e.g.\ by writing answers to the exercises while your programs are running.
 \end{itemize}
 
+In the end, we hope that you will enjoy the project and your introduction to the world of molecular dynamics. If you do, make sure to check out the summer scholarships offered in molecular dynamics by the Centre for Computing in Science Education (CCSE).
 
-\newpage
+Good luck!
+
+
+\clearpage
 
 %  _       _                 _       _         _
 % (_)_ __ | |_ _ __ ___   __| |_   _| | _____ (_) ___  _ __
@@ -185,7 +178,7 @@
 % |_|_| |_|\__|_|  \___/ \__,_|\__,_|_|\_\___// |\___/|_| |_|
 %                                           |__/
 \section{\underline{Introduction}}
-In this project you will learn the basics of a simulation technique called molecular dynamics (MD). Molecular dynamics is a method actively used in research here at the Department of Physics, yet its basic principle can be understood and implemented with the background of a first-year physics student.
+In this project, you will learn the basics of a simulation technique called molecular dynamics (MD). Molecular dynamics is a method actively used in research here at the Department of Physics, yet its basic principle can be understood and implemented with the background of a first-year physics student.
 
 Molecular dynamics is based on the assumption that even atoms move according to the laws of Newton, given the correct model for interactions. The goal of this project is to model an argon gas, where the atoms interact according to the famous Lennard-Jones potential,
 \begin{equation}
@@ -198,8 +191,8 @@ where \(r\) is the distance between two atoms, \(r=\norm{\vec{r}_i-\vec{r}_j}\).
     \item Plot the potential as a function of \(r\) with \(\varepsilon=1\) and \(\sigma=1\).
     \item The behaviour of \(U(r)\) is vastly different for \(r \ll \sigma\) and \(r \gg \sigma\). Which term in the potential,~\vref{eq:lj}, dominates in each case and what is the effect?
     \item Find and characterise the equilibrium points of the potential.
-    \item Describe qualitatively the motion of two atoms which start at rest separated by a distance of \(\num{1.5}\sigma\). What if they start with a separation of \(\num{0.95}\sigma\)?  (hint: use the graph of the potential).
-    \item Characterise the shape of the potential around \(r=\num{1.0}\sigma\). Can you think of other force(s) with the same behaviour?
+    \item Describe qualitatively the motion of two atoms which start at rest separated by a distance of \(\num{1.5}\sigma\). What if they start with a separation of \(\num{0.95}\sigma\)?  (Hint: use the graph of the potential.)
+    \item Describe the shape of the potential close to the stable equilibrium point. Can you think of other force(s) with the same behaviour?
 \end{enumerate}
 
 \subsection{Forces and equations of motion}
@@ -214,7 +207,7 @@ where \(r\) is the distance between two atoms, \(r=\norm{\vec{r}_i-\vec{r}_j}\).
 \subsection{Units}
 As you may remember from MAT-INF1100, numerical accuracy is reduced when computing with values which are many orders of magnitude apart. This is often an issue in physics, and molecular dynamics is no exception. For example, the mass of argon is smaller than \(10^{-25}\ \si{\kg}\), while typical length scales are on the order of nanometres, \(10^{-9}\ \si{\m}\).
 
-The remedy is to change units so that most quantities are close to \(1\). From~\vref{eq:lj} it is clear that \(\sigma\) and \(\varepsilon\) are the typical scale for length and energy.
+The remedy is to change units so that most quantities are close to \(1\). From~\vref{eq:lj} it is clear that \(\sigma\) and \(\varepsilon\) are the typical scales for length and energy.
 
 \begin{enumerate}[label=\roman*.]
     \item Introduce the scaled coordinates \(\vec{r}_i\,'=\vec{r}_i/\sigma\) and show that the equation of motion can be rewritten in terms of these coordinates as
@@ -242,7 +235,7 @@ The remedy is to change units so that most quantities are close to \(1\). From~\
 
 \subsection{Motion}\label{subsec:2motion}
 \begin{enumerate}[label=\roman*.]
-    \item Simulate the motion of two atoms which start at rest separated by a distance of \(\num{1.5}\sigma\). Use \(\Delta t'=\num{0.01}\), \(T' = 5\), and integrate with the Euler-Cromer method.
+    \item Simulate the motion of two atoms which start at rest separated by a distance of \(\num{1.5}\sigma\). Use \(\Delta t'=\num{0.01}\), simulate until \(t'=5\) and integrate with the Euler-Cromer method.
     \item Plot the distance between the atoms as a function of time.
     \item How does the motion fit with your expectations from~\vref{subsec:understanding}?
     \item Repeat the previous tasks, but now with an initial separation of \(\num{0.95}\sigma\). Explain your results.
@@ -252,17 +245,13 @@ The remedy is to change units so that most quantities are close to \(1\). From~\
 \begin{enumerate}[label=\roman*.]
     \item Plot the kinetic, potential and total energy as a function of time for the two cases in the previous section.
     \item Theoretically speaking, should the total energy be conserved? Why, or why not? What about momentum?
-    \item Does your program fulfill this? If not, what could be the cause?
+    \item Does your program fulfil this? If not, what could be the cause?
     \item Simulate the same system as in~\vref{subsec:2motion} with the Euler, Euler-Cromer and Velocity Verlet algorithms, and compare graphs of the total energy as a function of time.
-    \item Find the largest time step that keeps stable motion and conserves energy for all three methods (fluctuations in energy are allowed as long as they are periodic and doesn't increase/decrease with time). Discuss your results.
+    \item Find the largest time step that keeps stable motion and conserves energy for all three methods (small fluctuations in energy are allowed as long as they are periodic and don't increase/decrease with time). Discuss your results.
     \item Link your experimentation to a brief discussion of the pros and cons of the three methods, both physically and computationally.
-    \\\\ \underline{\textbf{From here on out we're going to use the Velocity-Verlet method.}}
 \end{enumerate}
 
-%\subsection{Different motion}
-%\begin{enumerate}[label=\roman*.]
-%    \item Repeat~\vref{subsec:2motion} with an initial separation of \(\num{0.95}\sigma\). Explain your results.
-%\end{enumerate}
+The Velocity-Verlet method should be used for the rest of the project.
 
 \subsection{Visualisation}
 \begin{enumerate}[label=\roman*.]
@@ -329,11 +318,11 @@ The smallest repeating unit is called a unit cell, and each unit cell contains f
 \end{minipage}
 
 where \(i\), \(j\) and \(k\) run from \(0\) to \(n-1\) and \(d\) is the size of one unit cell. One atom is placed at the bottom left corner of the unit cell, and the other three at
-the centre of the three connected walls (see drawing above). This structure will contain \(4n^3\) atoms in total, and the total size of the simulation box will be $L^3$.
+the centre of the three connected walls (see drawing above). This structure will contain \(4n^3\) atoms in total, and the total size of the simulation box will be $(nd)^3=L^3$.
 
 
 \begin{enumerate}[label=\roman*.]
-    \item Write a function which takes \(n\) and \(L\) as arguments and returns the positions of \(4n^3\) atoms on a face-centred cubic lattice.
+    \item Write a function which takes \(n\) and \(L\) (or \(n\) and \(d\)) as arguments and returns the positions of \(4n^3\) atoms on a face-centred cubic lattice.
     \item Verify your implementation by calling your function for \(n=3\) and \(L = 20\), writing the resulting positions to an \texttt{xyz}-file and looking at the result in Ovito. Your system should contain \(4\cdot3^3=108\) atoms.
     \item Show that the unit cell size corresponding to the density \(\rho=\SI{1.374}{\gram\per\cm\tothe3}\) is \(d=1.7 \sigma\). This will be used in the remaining parts of the project.
 \end{enumerate}
@@ -345,16 +334,14 @@ the centre of the three connected walls (see drawing above). This structure will
 \end{enumerate}
 
 \subsection{Boundary conditions}
-In the previous exercise, you probably observed that the atoms immediately spread out into a large volume, possibly with some continuing to infinity (and beyond). This is not the behaviour we want. Ideally, we would like to model the bulk behaviour of argon by the use of periodic boundary conditions, but the implementation of this is a bit finicky (and very slow if not implemented efficiently).
+In the previous exercise, you probably observed that the atoms immediately spread out into a large volume, possibly with some continuing to infinity (and beyond). This is not the behaviour we want. Ideally, we would like to model the bulk behaviour of argon by the use of periodic boundary conditions, but it is finicky to implement this efficiently.
 
-Instead, we will model atoms which are forced to remain inside the initial box by the use of reflective boundary conditions. This gives reasonable results for the quantities that we want to measure.
-Reflective boundary conditions simply means that atoms that would otherwise leave the box, are turned around.
+Instead, we will model atoms which are forced to remain inside a box by the use of reflective boundary conditions. This gives reasonable results for the quantities that we want to measure.
+Having reflective boundary conditions simply means that atoms that would otherwise leave the box, are turned around.
 \begin{enumerate}[label=\roman*.]
     \item Implement reflective boundary conditions in your program.
     \item Run a simulation with \(108\) atoms and verify visually that your implementation works. Give the atoms some initial velocities of your own choosing.
 \end{enumerate}
-
-\textbf{Congratulations!} You have now implemented all necessary aspects to simulating and solving a simple 'N atoms in a box'-problem. Deriving analytical expressions or implementing a solver is one thing, but actually using them to calculate properies of realistic systems is what we really aim for when studying physics. In other words, let's not stop here - let's do some science!
 
 
 %           _
@@ -436,7 +423,7 @@ While it is not possible to integrate to \(\infty\) in a molecular dynamics simu
 % | | | (_| |  _|
 % |_|  \__,_|_|
 \subsection{Radial distribution function}
-The radial distribution function \(g(r)\) shown in figure 2 of~\cite{Rahman_1964} describes the distribution of distances between an atom and its neighbours. It is defined as the ratio of the density at a distance \(r\) from an atom divided by the average density, i.e.
+The radial distribution function \(g(r)\) shown in figure 2 of~\cite{Rahman_1964} describes the distribution of distances between an atom and its neighbours. It is defined as the ratio of the density at a distance \(r\) from an atom and the average density, i.e.
 \begin{equation}
     g(r) = \frac{V}{N} \frac{n(r)}{4\pi r^2\Delta r},\label{eq:rdf}
 \end{equation}
@@ -476,7 +463,7 @@ The \texttt{xyz}-format is a semi-standard format for storing data from molecula
 For two atoms simulated over three timesteps, where \texttt{xij} represents the \(x\)-coordinate of atom \(j\) at timestep \(i\), the file would look like this:
 \begin{lstlisting}[language=]
     2
-    type  x   y   z     <--- This line is a read as a comment, and is thus ignored.
+    type  x   y   z     <--- This line is a read as a comment, and therefore ignored.
     Ar   x11 y11 z11
     Ar   x12 y12 z12
     2
@@ -499,7 +486,7 @@ For two atoms simulated over three timesteps, where \texttt{xij} represents the 
 \subsection{Visualisation}\label{app:ovito}
 Files written in the \texttt{xyz}-format can be read using the Ovito visualisation tool. It can be downloaded and installed from \url{https://ovito.org/index.php/download}.
 
-When the installation has finished, simply open Ovito and click ``File'' \(\to\) ``Load File`` and choose your \texttt{xyz}-file. Edit the column mapping in the dialogue if necessary. When the atoms have appeared on your screen, check the box named ``File contains time series'' on the right-hand side, press \tikz[x=8pt,y=8pt]{\filldraw[fill=white] (0,0) -- (0,1) -- (0.866,0.5) -- (0,0);} and watch your atoms move around!
+When the installation has finished, simply open Ovito, click ``File'' \(\to\) ``Load File`` and choose your \texttt{xyz}-file. Edit the column mapping in the dialogue if necessary. When the atoms have appeared on your screen, check the box named ``File contains time series'' on the right-hand side, press \tikz[x=8pt,y=8pt]{\filldraw[fill=white] (0,0) -- (0,1) -- (0.866,0.5) -- (0,0);} and watch your atoms move around!
 
 %                 _      _
 % __   _____ _ __| | ___| |_
@@ -507,7 +494,7 @@ When the installation has finished, simply open Ovito and click ``File'' \(\to\)
 %  \ V /  __/ |  | |  __/ |_
 %   \_/ \___|_|  |_|\___|\__|
 \subsection{Velocity-Verlet}\label{app:verlet}
-The Velocity-Verlet integration scheme is based on a second order Taylor polynomial. With \(\vec{r}_i(t)\) denoting the position of atom \(i\) at a time \(t\), the second order Taylor expansions of position and velocity can be written as
+The Velocity-Verlet integration scheme is based on a second-order Taylor polynomial. With \(\vec{r}_i(t)\) denoting the position of atom \(i\) at a time \(t\), the second-order Taylor expansions of position and velocity can be written as
 \begin{alignat*}{2}
     \vec{r}_i(t+\Delta t) &\approx \vec{r}_i(t) + \vec{v}_i(t)\Delta t + \tfrac{1}{2}\vec{a}_i(t)\Delta t^2\\
     \vec{v}_i(t+\Delta t) &\approx \vec{v}_i(t) + \vec{a}_i(t)\Delta t + \tfrac{1}{2}\vec{a}_i'(t)\Delta t^2.
