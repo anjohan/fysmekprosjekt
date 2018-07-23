@@ -5,6 +5,7 @@ addons:
     apt:
         update: true
         packages:
+            - libosmesa-dev
             - texlive-full
             - latexmk
             - asymptote
