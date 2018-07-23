@@ -1,0 +1,18 @@
+language: generic
+sudo: required
+
+addons:
+    apt:
+        packages:
+            - texlive-full
+            - latexmk
+            - asymptote
+script:
+    - latexmk -help
+    - make
+    - make clean
+
+deploy:
+    provider: pages
+    skip-cleanup: true
+    github-token: $GITHUB_TOKEN
