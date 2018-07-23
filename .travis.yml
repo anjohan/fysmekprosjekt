@@ -12,7 +12,7 @@ before_install:
 
 script:
     - docker exec -t arch bash -c "cd /travis; make && make clean"
-    - git add -f project.pdf
+    - rm .gitignore
 
 deploy:
     provider: pages
