@@ -1,4 +1,4 @@
-project.pdf
+*.pdf
 *.png
 *.xyz
 tags
