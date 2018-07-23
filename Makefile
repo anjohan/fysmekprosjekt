@@ -1,3 +1,5 @@
+SHELL:=/bin/bash
+
 all: project.pdf
 
 project.pdf: project.tex sources.bib fig.pdf rdf.py
