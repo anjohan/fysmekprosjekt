@@ -4,7 +4,7 @@ sudo: required
 before_install:
     - sudo apt-add-repository -y universe
     - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-    - sudo add-apt-repository ppa:jonathonf/texlive
+    - sudo add-apt-repository -y ppa:jonathonf/texlive
     - sudo apt update -y
     - sudo -E apt-get -yq --no-install-suggests --no-install-recommends --force-yes install texlive-full latexmk asymptote
       # - export CC=gcc-8 CXX=g++-8
