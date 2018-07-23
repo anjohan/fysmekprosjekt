@@ -7,7 +7,7 @@ services:
 before_install:
     - docker pull pritunl/archlinux:latest
     - docker run -d --name arch -v $(pwd):/travis pritunl/archlinux:latest tail -f /dev/null
-    - docker exec -t arch bash -c "pacman -S --noconfirm texlive-most asymptote make"
+    - docker exec -t arch bash -c "pacman -S --noconfirm texlive-most asymptote make biber"
 
 script:
     - docker exec -t arch bash -c "cd /travis; make && make clean"
