@@ -8,6 +8,7 @@ addons:
             - latexmk
             - asymptote
 script:
+    - latexmk -help
     - make
     - make clean
 
