@@ -7,13 +7,13 @@ services:
 before_install:
     - docker pull pritunl/archlinux:latest
     - docker run -d --name arch -v $(pwd):/travis pritunl/archlinux:latest tail -f /dev/null
-    - docker exec -t arch bash -c "pacman -S --noconfirm texlive-most asymptote biber"
+    - docker exec -t arch bash -c "pacman -S --noconfirm texlive-most asymptote biber wget tar"
     - docker exec -t arch bash -c "ln -s /usr/bin/vendor_perl/biber /usr/bin/biber"
     - docker exec -t arch bash -c "wget https://sourceforge.net/projects/asymptote/files/2.45/asymptote-2.45.src.tgz;
       tar -xzf asymptote-2.45.src.tgz;
       cd asymptote-2.45/;
       ./configure --enable-offscreen;
-      make -j all;
+      make -j4 all;
       sudo make install;
       cd ..;
       rm -rf asymptote-2.45;"
