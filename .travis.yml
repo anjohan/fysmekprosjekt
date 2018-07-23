@@ -9,6 +9,7 @@ addons:
             - asymptote
 script:
     - make
+    - make clean
 
 deploy:
     provider: pages
