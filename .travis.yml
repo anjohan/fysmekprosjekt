@@ -1,27 +1,16 @@
 language: generic
 sudo: required
 
+services:
+    - docker
+
 before_install:
-    - sudo apt-add-repository -y universe
-    - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-    - sudo add-apt-repository -y ppa:jonathonf/texlive
-    - sudo apt update -y
-    - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
-    - sudo -E apt-get -yq --no-install-suggests --no-install-recommends --force-yes install texlive-full latexmk asymptote
-      # - export CC=gcc-8 CXX=g++-8
-      # - wget https://sourceforge.net/projects/asymptote/files/2.45/asymptote-2.45.src.tgz
-      # - tar -xzf asymptote-2.45.src.tgz
-      # - cd asymptote-2.45/
-      # - ./configure --enable-offscreen
-      # - make all
-      # - sudo make install
-      # - cd ..
-      # - rm -rf asymptote-2.45
+    - docker pull pritunl/archlinux:latest
+    - docker run -d --name arch -v $(pwd):/travis pritunl/archlinux:latest tail -f /dev/null
+    - docker exec -t arch bash -c "pacman -S --noconfirm texlive-most asymptote"
 
 script:
-    - latexmk -help
-    - make
-    - make clean
+    - docker exec -t arch bash -c "cd /travis; make && make clean"
 
 deploy:
     provider: pages
