@@ -8,7 +8,17 @@ addons:
             - libosmesa-dev
             - texlive-full
             - latexmk
-            - asymptote
+
+before_install:
+    - wget https://sourceforge.net/projects/asymptote/files/2.45/asymptote-2.45.src.tgz
+    - tar -xzf asymptote-2.45.src.tgz
+    - cd asymptote-2.45/
+    - ./configure --enable-offscreen
+    - make all
+    - sudo make install
+    - cd ..
+    - rm -rf asymptote-2.45
+
 script:
     - latexmk -help
     - make
