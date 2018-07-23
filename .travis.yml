@@ -6,6 +6,7 @@ before_install:
     - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
     - sudo add-apt-repository -y ppa:jonathonf/texlive
     - sudo apt update -y
+    - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
     - sudo -E apt-get -yq --no-install-suggests --no-install-recommends --force-yes install texlive-full latexmk asymptote
       # - export CC=gcc-8 CXX=g++-8
       # - wget https://sourceforge.net/projects/asymptote/files/2.45/asymptote-2.45.src.tgz
