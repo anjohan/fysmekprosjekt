@@ -5,9 +5,9 @@ services:
     - docker
 
 before_install:
-    - docker pull base/archlinux:latest
+    - docker pull base/archlinux:full
     - docker run -d --name arch -v $(pwd):/travis base/archlinux:latest tail -f /dev/null
-    - docker exec -t arch bash -c "pacman -S --noconfirm texlive-most biber make"
+    - docker exec -t arch bash -c "pacman -Sy --noconfirm texlive-most biber make"
     - docker exec -t arch bash -c "ln -s /usr/bin/vendor_perl/biber /usr/bin/biber"
 
 script:
