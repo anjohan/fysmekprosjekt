@@ -3,17 +3,16 @@
 %\usepackage{pythontex}
 \usepackage[usenames,dvipsnames]{xcolor}
 \usepackage[includeheadfoot,margin=0.8 in]{geometry}
-\usepackage{siunitx,physics,cancel,upgreek,varioref,listings,booktabs,pdfpages,ifthen,polynom,todonotes}
+\usepackage{siunitx,physics,cancel,upgreek,varioref,listings,booktabs,todonotes}
 %\usepackage{minted}
 \usepackage[backend=biber]{biblatex}
 \DefineBibliographyStrings{english}{%
       bibliography = {References},
 }
 \addbibresource{sources.bib}
-\usepackage{mathtools,upgreek,bigints}
+\usepackage{mathtools}
 \usepackage{babel}
 \usepackage{graphicx}
-\graphicspath{{./}{./e/}}
 \usepackage{float}
 \usepackage{amsmath}
 \usepackage{amssymb,epstopdf}
@@ -22,15 +21,6 @@
 %\usepackage{fouriernc}
 % \usepackage[T1]{fontenc}
 \usepackage{mathpazo}
-% \usepackage{inconsolata}
-%\usepackage{eulervm}
-%\usepackage{cmbright}
-%\usepackage{fontspec}
-%\usepackage{unicode-math}
-%\setmainfont{Tex Gyre Pagella}
-%\setmathfont{Tex Gyre Pagella Math}
-%\setmonofont{Tex Gyre Cursor}
-%\renewcommand*\ttdefault{txtt}
 \usepackage[scaled]{beramono}
 \usepackage{fancyhdr}
 \usepackage[utf8]{inputenc}
@@ -38,25 +28,11 @@
 \usepackage{lastpage}
 \usepackage{microtype}
 \usepackage[font=normalsize]{subcaption}
-\usepackage{luacode}
 \usepackage[linktoc=all, bookmarks=true, pdfauthor={Anders Johansson},pdftitle={FYS-MEK-project}]{hyperref}
-\usepackage{tikz,pgfplots,pgfplotstable}
-\usepgfplotslibrary{colorbrewer}
-\usepgfplotslibrary{external}
-\tikzset{external/system call={lualatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\texsource"}}
-\tikzexternalize[prefix=tmp/, mode=list and make]
-\pgfplotsset{cycle list/Dark2}
-\pgfplotsset{compat=1.8}
+\usepackage{tikz}
 \renewcommand{\CancelColor}{\color{red}}
 \let\oldexp=\exp
 \renewcommand{\exp}[1]{\mathrm{e}^{#1}}
-\renewcommand{\Re}[1]{\mathfrak{Re}\ifthenelse{\equal{#1}{}}{}{\left(#1\right)}}
-\renewcommand{\Im}[1]{\mathfrak{Im}\ifthenelse{\equal{#1}{}}{}{\left(#1\right)}}
-\renewcommand{\i}{\mathrm{i}}
-\newcommand{\tittel}[1]{\title{#1 \vspace{-7ex}}\author{}\date{}\maketitle\thispagestyle{fancy}\pagestyle{fancy}\setcounter{page}{1}}
-
-% \newcommand{\deloppg}[2][]{\subsection*{#2) #1}\addcontentsline{toc}{subsection}{#2)}\refstepcounter{subsection}\label{#2}}
-% \newcommand{\oppg}[1]{\section*{Oppgave #1}\addcontentsline{toc}{section}{Oppgave #1}\refstepcounter{section}\label{oppg#1}}
 
 \labelformat{section}{#1}
 \labelformat{subsection}{exercise~#1}
@@ -65,8 +41,6 @@
 \labelformat{figure}{figure~#1}
 \labelformat{table}{table~#1}
 
-
-%\setcounter{secnumdepth}{4}
 \renewcommand{\thesection}{Part \arabic{section}}
 \renewcommand{\thesubsection}{\arabic{section}\alph{subsection})}
 \renewcommand{\thesubsubsection}{\arabic{section}\alph{subsection}\roman{subsubsection})}
@@ -89,7 +63,6 @@
     texcl=true,
     language=Python
 }
-\colorlet{DarkGrey}{white!20!black}
 \newcommand{\eqtag}[1]{\refstepcounter{equation}\tag{\theequation}\label{#1}}
 \hypersetup{hidelinks=True}
 
@@ -102,27 +75,15 @@
 \allowdisplaybreaks[4]
 \fancyhf{}
 
-% \rhead{MD-Project}
 \rfoot{Page~\thepage{} of~\pageref{LastPage}}
-% \lhead{FYS-MEK1110}
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{\headrulewidth}
-
-%\definecolor{gronn}{rgb}{0.29, 0.33, 0.13}
-\definecolor{gronn}{rgb}{0, 0.5, 0}
-
-\newcommand{\husk}[2]{\tikz[baseline,remember picture,inner sep=0pt,outer sep=0pt]{\node[anchor=base] (#1) {\(#2\)};}}
-\newcommand{\artanh}[1]{\operatorname{artanh}{\qty(#1)}}
-\newcommand{\matrise}[1]{\begin{pmatrix}#1\end{pmatrix}}
-
-\newread\infile
 
 %start
 \begin{document}
 %\maketitle
 
 \begin{titlepage}
-%\includegraphics[width=\textwidth]{fysisk.pdf}
 \vspace*{\fill}
 \begin{center}
 \textsf{
@@ -482,7 +443,6 @@ For two atoms simulated over three timesteps, where \texttt{xij} represents the 
 %  / _ \ \ / / | __/ _ \
 % | (_) \ V /| | || (_) |
 %  \___/ \_/ |_|\__\___/
-\tikzexternaldisable
 \subsection{Visualisation}\label{app:ovito}
 Files written in the \texttt{xyz}-format can be read using the Ovito visualisation tool. It can be downloaded and installed from \url{https://ovito.org/index.php/download}.
 
