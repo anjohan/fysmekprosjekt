@@ -5,8 +5,8 @@ services:
     - docker
 
 before_install:
-    - docker pull archimg/base:full
-    - docker run -d --name arch -v $(pwd):/travis archimg/base:full tail -f /dev/null
+    - docker pull archlinux/base
+    - docker run -d --name arch -v $(pwd):/travis archlinux/base tail -f /dev/null
     - docker exec -t arch bash -c "pacman -Sy --noconfirm texlive-most biber make"
     - docker exec -t arch bash -c "ln -s /usr/bin/vendor_perl/biber /usr/bin/biber"
 
