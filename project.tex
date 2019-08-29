@@ -122,8 +122,10 @@ Python and Matlab are the natural choices of programming language for this proje
 When writing your programs, you should keep two things in mind:
 \begin{itemize}
     \item Reusability: This project contains many exercises, but most of them are variants of or build upon earlier exercises, so you will save a lot of time if your implementation is easy to extend or adapt to a new problem.
-    \item Efficiency: The two last parts of the project require larger simulations which will run for hours (or even days) if your program is slow. Try therefore to think of efficiency, and use vectorised operations with Numpy arrays whenever possible. Use your own time wisely as well, e.g.\ by writing answers to the exercises while your programs are running.
+    \item Efficiency: The two last parts of the project require larger simulations which will run for hours (or even days) if your program is slow. Try therefore to think of efficiency, and use vectorised operations with Numpy arrays whenever possible. A small note on this can be found \href{https://github.com/uio-fys-mek/md-prosjekt/blob/master/vektorisering.ipynb}{\underline{here}}. Use your own time wisely as well, e.g.\ by writing answers to the exercises while your programs are running.
 \end{itemize}
+
+The delivery should be in the form of a report - a guide can be found from page 4 \href{http://compphysics.github.io/ComputationalPhysics/doc/pub/projectwriting/pdf/projectwriting-print.pdf}{\underline{here}}. As this might be the first scientific report for many of you, we don't expect Nobel Prize-worthy reports, but - thorough descriptions of the theory and methods you have used, as well as discussions of your results is expected to pass. Your code should be added separately.
 
 In the end, we hope that you will enjoy the project and your introduction to the world of molecular dynamics. If you do, make sure to check out the summer scholarships\footnote{\url{https://www.mn.uio.no/ccse/om/aktuelt/aktuelle-saker/sommerjobber-for-studenter-ved-ccse-sommeren-2019.html}} offered in molecular dynamics by the Centre for Computing in Science Education (CCSE).
 
@@ -295,12 +297,24 @@ the centre of the three connected walls (see drawing above). This structure will
 \end{enumerate}
 
 \subsection{Boundary conditions}
-In the previous exercise, you probably observed that the atoms immediately spread out into a large volume, possibly with some continuing to infinity (and beyond). This is not the behaviour we want. Ideally, we would like to model the bulk behaviour of argon by the use of periodic boundary conditions, but it is finicky to implement this efficiently.
+In the previous exercise, you probably observed that the atoms immediately spread out into a large volume, possibly with some continuing to infinity (and beyond). This is not the behaviour we want. Ideally, we would like to model the bulk behaviour of argon by the use of periodic boundary conditions, although it can be finicky to implement this efficiently.
 
-Instead, we will model atoms which are forced to remain inside a box by the use of reflective boundary conditions. This gives reasonable results for the quantities that we want to measure.
-Having reflective boundary conditions simply means that atoms that would otherwise leave the box, are turned around.
+To simulate bulk behaviour properly, the atoms should not only be constrained to move inside the box, but should also feel forces from neighboring images (copies) of the same box. i.e. if an atom is close to the right-facing wall, it should feel forces from atoms close to the left-facing wall, as if the two walls were connected.
+To efficiently calculate the shortest distance between atoms $i$ and $j$ across boundaries, the following trick should be used
+
+
+\begin{lstlisting}
+ dx = x[j] - x[i]
+ dx = dx - round(dx/L)*L
+\end{lstlisting}
+
+where \texttt{L} is the size of the box, and \texttt{round} rounds up to the nearest integer (see if you understand the logic behind this calculation!). Periodic boundary conditions also mean that if an atom leave the box on one side, it should reenter on the opppsite side. 
+
+If the implementation of periodic bounadry conditions proves to be too diffucult or too slow, it's also possible to use \textit{reflective} boundary conditions. Although it doesn't simulate bulk behaviour the same way, it still gives reasonable results for the quantities that we want to measure for larger systems.
+
+Having reflective boundary conditions simply means that atoms that would otherwise leave the box, are turned around. Calculations of forces across boundaries are also neglected in this case.
 \begin{enumerate}[label=\roman*.]
-    \item Implement reflective boundary conditions in your program.
+    \item Implement either periodic or reflective boundary conditions (or both) in your program.
     \item Run a simulation with \(108\) atoms and verify visually that your implementation works. Give the atoms some initial velocities of your own choosing.
 \end{enumerate}
 
@@ -312,6 +326,8 @@ Having reflective boundary conditions simply means that atoms that would otherwi
 % |___/\___|_|\___|_| |_|\___\___|
 \section{\underline{Science}}
 By now, you will have a well-functioning (if not terribly efficient) set of tools for running molecular dynamics simulations. It is now time to apply these tools to real problems. The goal is to reproduce some of the main results from the first article containing proper molecular dynamics (``landmark simulations'' according to Wikipedia\footnote{\url{https://en.wikipedia.org/wiki/Molecular_dynamics\#History}}), written by A. Rahman in 1964\cite{Rahman_1964}.
+
+Section 4b) and 4c) (marked with *) describes two different ways to find the \textit{diffusion constant}. You may choose to do only one of the them, but we'll encourage you to do both. It's worth noting however that a functioning implementation of periodic boundary conditions is needed for section 4c.
 
 \subsection{Temperature}
 \paragraph{Measurement:} Temperature is one of the most important concepts in thermodynamics, and you will learn much more about it in FYS2160. As you may have learnt already, temperature measures the vibrations of atoms. This is formalised through the equipartition theorem, which for a monoatomic gas such as argon states that
@@ -339,6 +355,7 @@ v0 = np.random.normal(0, sqrt(T), size=(N,3))
 
 \begin{enumerate}[label=\roman*.,resume]
     \item Run a simulation with \(108\) atoms and an initial temperature of \(\SI{300}{\kelvin}\). Plot the temperature as a function of time.
+    \item Find an initial temperature that makes the equilibrium temperature approximately equal to the \(\SI{94.4}{\kelvin}\) used in~\cite{Rahman_1964}. Plot the temperature as a function of time.
 \end{enumerate}
 
 %                   __
@@ -346,7 +363,7 @@ v0 = np.random.normal(0, sqrt(T), size=(N,3))
 % \ \ / / _` |/ __| |_
 %  \ V / (_| | (__|  _|
 %   \_/ \__,_|\___|_|
-\subsection{Velocity autocorrelation and diffusion coefficient}
+\subsection{*Velocity autocorrelation and diffusion coefficient}
 The velocity autocorrelation, denoted \(A(t)\), is a measure of how similar the distribution of velocities is to the initial distribution. It is shown in figure 4 of~\cite{Rahman_1964}. \(A(t=0)=1\), since the velocity distribution at \(t=0\) \emph{is} the initial distribution, while \(A(t)\) decreases rapidly for \(t>0\) as the atoms collide with each other and the velocities become less and less similar to the initial distribution.
 
 Mathematically, the velocity autocorrelation is defined as
@@ -359,7 +376,6 @@ where the sum runs over all atoms.
 \begin{enumerate}[label=\roman*.]
     \item Add the calculation of the velocity autocorrelation to your implementation.
     \item Run a simulation with e.g. \(256\) atoms (more if you can), and plot the velocity autocorrelation as a function of time. Compare with figure 4 of~\cite{Rahman_1964}.
-    \item Plot the temperature as a function of time, and find an initial temperature that makes the equilibrium temperature approximately equal to the \(\SI{94.4}{\kelvin}\) used in~\cite{Rahman_1964}.
 \end{enumerate}
 
 One cause of deviations is that the initial configuration of positions and velocities (\(\vec{v}_i(0)\) in~\vref{eq:vacf}) should be an equilibrium distribution.
@@ -377,6 +393,38 @@ While it is not possible to integrate to \(\infty\) in a molecular dynamics simu
 \begin{enumerate}[label=\roman*.,resume]
     \item Estimate the diffusion coefficient from your previously calculated velocity autocorrelation. Compare with the result from~\cite{Rahman_1964}.
 \end{enumerate}
+
+
+\subsection{*Mean squared displacement and diffusion coefficient}
+A more intuituve and direct way to calculate the diffusion in the system is via the \textit{mean squared displacement}, defined as
+
+\begin{equation}
+ \langle r^2(t) \rangle = \langle (\vec{r}(t) - \vec{r}(t_0))^2 \rangle = \frac{1}{N} \sum_{n=1}^N (\vec{r}_n(t) - \vec{r}_n(t_0)))^2.
+ \label{eq:msd}
+\end{equation}
+
+This measure tells us the average distance the atoms has traveled after a time $t$ as compared to their positions at a reference time, $t_0$. It's important that $t_0$ is set at a time where the system is already at equilibrium.
+
+\textbf{Important note: Periodic boundary conditions are required to calculate the msd, as we need to keep track of where, and how many times the atoms has crossed the boundaries.} This means counters for all atoms in all three directions are needed.
+
+\begin{enumerate}[label=\roman*.]
+    \item Add the calculation of the mean squared displacement to your implementation.
+\end{enumerate}
+
+Through the theory of brownian motion, it can be shown that the mean squared displement is linked to the diffusion constant $D$ by the following relation (in three dimensions):
+
+\begin{equation}
+ \langle r^2(t) \rangle = 6Dt \hspace{0.5 cm} \text{when } t \rightarrow \infty.
+\end{equation}
+
+As with the velocity autocorrelation, the relation to the diffusion constant implies a simulation of infinite time, but the rapid convergence of the msd ensures a good approximation also in this case.  
+
+\begin{enumerate}[label=\roman*., resume]
+    \item Implement the calculation of the diffusion constant, and run a simulation for 864 atoms (fewer is also fine if the runtime is slow). How does your result compare to the one in~\cite{Rahman_1964}?
+    \item (Optional) If your program isn't too slow, calculate the diffusion constant as a function of temperature \(D(T)\) for equilibrium temperatures in the range of \(T = [50 K, 120K]\). Plot the result and describe what you see. Google the element of argon, and see if you find something that's supposed to happen in the given temperature range. Can you link this to your results?   
+\end{enumerate}
+
+
 
 %          _  __
 %  _ __ __| |/ _|
