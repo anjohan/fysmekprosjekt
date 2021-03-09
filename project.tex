@@ -310,7 +310,7 @@ To efficiently calculate the shortest distance between atoms $i$ and $j$ across 
  dx = dx - round(dx/L)*L
 \end{lstlisting}
 
-where \texttt{L} is the size of the box, and \texttt{round} rounds up to the nearest integer (see if you understand the logic behind this calculation!). Periodic boundary conditions also mean that if an atom leave the box on one side, it should reenter on the opppsite side. 
+where \texttt{L} is the size of the box, and \texttt{round} rounds up to the nearest integer (see if you understand the logic behind this calculation!). Periodic boundary conditions also mean that if an atom leave the box on one side, it should reenter on the opposite side. 
 
 If the implementation of periodic bounadry conditions proves to be too diffucult or too slow, it's also possible to use \textit{reflective} boundary conditions. Although it doesn't simulate bulk behaviour the same way, it still gives reasonable results for the quantities that we want to measure for larger systems.
 
