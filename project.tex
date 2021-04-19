@@ -246,7 +246,8 @@ As you will experience, it takes a lot longer to simulate \(N\) atoms than two -
 This effectively sets the potential energy \(U(r)\) to be \(0\) for \(r\geq 3\sigma\). Since \(U(3\sigma)\) is not exactly equal to \(0\), the potential energy becomes discontinuous, which breaks energy conservation. The solution is to use a shifted potential, i.e.\ adding a constant such that \(U(3\sigma)\) is exactly zero.
 
 \begin{enumerate}[label=\roman*., resume]
-    \item Plot the shifted potential and the corresponding force to verify your implementation of the cut-off.
+    %\item Plot the shifted potential and the corresponding force to verify your implementation of the cut-off.
+    \item Plot the shifted and original potential for $r\in[2.5, 3.5]$ in a coordinate system. By what constant is the potential shifted?
     \item Does the shift of the potential described above impact the force calculations?
 \end{enumerate}
 
@@ -317,7 +318,8 @@ If the implementation of periodic bounadry conditions proves to be too diffucult
 Having reflective boundary conditions simply means that atoms that would otherwise leave the box, are turned around. Calculations of forces across boundaries are also neglected in this case.
 \begin{enumerate}[label=\roman*.]
     \item Implement either periodic or reflective boundary conditions (or both) in your program.
-    \item Run a simulation with \(108\) atoms and verify visually that your implementation works. Give the atoms some initial velocities of your own choosing.
+    %\item Run a simulation with \(108\) atoms and verify visually that your implementation works. Give the atoms some initial velocities of your own choosing.
+    \item Run a simulation with an atom initialized at \([1,0,0]\) with velocity \([1,0,0]\). Set box length 2 and vertify visually that your implementation works.
 \end{enumerate}
 
 
@@ -365,7 +367,7 @@ v0 = np.random.normal(0, sqrt(T), size=(N,3))
 % \ \ / / _` |/ __| |_
 %  \ V / (_| | (__|  _|
 %   \_/ \__,_|\___|_|
-\subsection{*Velocity autocorrelation and diffusion coefficient}
+\subsection{Velocity autocorrelation and diffusion coefficient (optional)}
 The velocity autocorrelation, denoted \(A(t)\), is a measure of how similar the distribution of velocities is to the initial distribution. It is shown in figure 4 of~\cite{Rahman_1964}. \(A(t=0)=1\), since the velocity distribution at \(t=0\) \emph{is} the initial distribution, while \(A(t)\) decreases rapidly for \(t>0\) as the atoms collide with each other and the velocities become less and less similar to the initial distribution.
 
 Mathematically, the velocity autocorrelation is defined as
@@ -397,7 +399,7 @@ While it is not possible to integrate to \(\infty\) in a molecular dynamics simu
 \end{enumerate}
 
 
-\subsection{*Mean squared displacement and diffusion coefficient}
+\subsection{Mean squared displacement and diffusion coefficient (optional)}
 A more intuituve and direct way to calculate the diffusion in the system is via the \textit{mean squared displacement}, defined as
 
 \begin{equation}
