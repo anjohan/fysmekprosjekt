@@ -15,6 +15,7 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v2
       - name: Compile project description
-        uses: xu-cheng/latex-action@v2
-        with:
-          root_file: project.tex
+        run: make project.pdf
+        #uses: xu-cheng/latex-action@v2
+        #with:
+        #  root_file: project.tex
