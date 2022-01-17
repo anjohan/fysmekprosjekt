@@ -111,7 +111,7 @@
 \section{\underline{Practical information}}
 This project is meant as a more challenging alternative to the first three mandatory assignments for those who feel that they already have a good grasp of high school physics, basic scientific programming and the Forward Euler method. The workload is (hopefully) approximately equal to the combined workload of the first three assignments.
 
-A special weekly group session\footnote{\url{https://www.uio.no/studier/emner/matnat/fys/FYS-MEK1110/v22/timeplan/index.html}} will focus on this project, where you can discuss with fellow students and get help from teaching assistants. Additionally, you are encouraged to use the Padlet platforms or GitHub issues for asking your own questions and answering the questions of other students.
+A special weekly group session\footnote{\url{https://www.uio.no/studier/emner/matnat/fys/FYS-MEK1110/v22/timeplan/index.html}} will focus on this project, where you can discuss with fellow students and get help from teaching assistants. Additionally, you are encouraged to use the Astro-discourse platform or GitHub issues for asking your own questions and answering the questions of other students.
 
 If you at some point find that this project is too difficult or time-consuming for you, the work you have already done may replace one or two normal assignments depending on how far you have come. Let us know, and we will find a solution.
 
@@ -195,7 +195,7 @@ The remedy is to change units so that most quantities are close to \(1\). From~\
 \subsection{Implementation}
 \begin{enumerate}[label=\roman*.]
     \item Write a function which solves~\vref{eq:undim} for two atoms and finds the positions and velocities of the atoms as a function of time. Implement three different integration methods:
-        Euler, Euler-Cromer and Velocity-Verlet (see~\vref{app:verlet} for a description of the latter).
+        Euler, Euler-Cromer and Velocity Verlet (see~\vref{app:verlet} for a description of the latter).
 \end{enumerate}
 
 \subsection{Motion}\label{subsec:2motion}
@@ -216,7 +216,7 @@ The remedy is to change units so that most quantities are close to \(1\). From~\
     \item Link your experimentation to a brief discussion of the pros and cons of the three methods, both physically and computationally.
 \end{enumerate}
 
-The Velocity-Verlet method should be used for the rest of the project.
+The Velocity Verlet method should be used for the rest of the project.
 
 \subsection{Visualisation}
 \begin{enumerate}[label=\roman*.]
@@ -275,7 +275,7 @@ The smallest repeating unit is called a unit cell, and each unit cell contains f
             i & 0.5+j & 0.5+k \\
             0.5+i & j & 0.5+k \\
             0.5+i & 0.5+j & k
-        \end{bmatrix}\cdot d\qquad \qquad\qquad
+        \end{bmatrix}\cdot d,\qquad \qquad\qquad
     \]
 \end{minipage}
 \begin{minipage}{0.4\textwidth}
@@ -303,7 +303,7 @@ the centre of the three connected walls (see drawing above). This structure will
 In the previous exercise, you probably observed that the atoms immediately spread out into a large volume, possibly with some continuing to infinity (and beyond). This is not the behaviour we want. Ideally, we would like to model the bulk behaviour of argon by the use of periodic boundary conditions, although it can be finicky to implement this efficiently.
 
 To simulate bulk behaviour properly, the atoms should not only be constrained to move inside the box, but should also feel forces from neighboring images (copies) of the same box. i.e. if an atom is close to the right-facing wall, it should feel forces from atoms close to the left-facing wall, as if the two walls were connected.
-To efficiently calculate the shortest distance between atoms $i$ and $j$ across boundaries, the following trick should be used
+To efficiently calculate the shortest distance between atoms $i$ and $j$ across boundaries, the following trick should be used:
 
 
 \begin{lstlisting}
@@ -331,7 +331,7 @@ Having reflective boundary conditions simply means that atoms that would otherwi
 \section{\underline{Science}}
 By now, you will have a well-functioning (if not terribly efficient) set of tools for running molecular dynamics simulations. It is now time to apply these tools to real problems. The goal is to reproduce some of the main results from the first article containing proper molecular dynamics (``landmark simulations'' according to Wikipedia\footnote{\url{https://en.wikipedia.org/wiki/Molecular_dynamics\#History}}), written by A. Rahman in 1964\cite{Rahman_1964}.
 
-Section 4b) and 4c) (marked with *) describes two different ways to find the \textit{diffusion constant}. You may choose to do only one of the them, but we'll encourage you to do both. It's worth noting however that a functioning implementation of periodic boundary conditions is needed for section 4c.
+Section 4b) and 4c) describes two different ways to find the \textit{diffusion constant}. You may choose to do only one of the them, but we'll encourage you to do both. It's worth noting however that a functioning implementation of periodic boundary conditions is needed for section 4c.
 
 \subsection{Temperature}
 \paragraph{Measurement:} Temperature is one of the most important concepts in thermodynamics, and you will learn much more about it in FYS2160. As you may have learnt already, temperature measures the vibrations of atoms. This is formalised through the equipartition theorem, which for a monoatomic gas such as argon states that
@@ -446,7 +446,8 @@ where \(V\) is the total volume, \(N\) the total number of particles and \(n(r)\
 \end{enumerate}
 \lstinputlisting[linerange={rdfstart-rdfend}]{rdf.py}
 
-
+\subsection{Optional exercises}
+A couple of optional exercises might be added here. First, the pressure is a natural quantity to measure, but was not done by \cite{Rahman_1964}. This calculation also requires the definition of the virial, which might be confusing. Second, the velocity distribution at equilibrium could be found.
 
 
 
