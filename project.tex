@@ -372,8 +372,8 @@ The velocity autocorrelation, denoted \(A(t)\), is a measure of how similar the 
 
 Mathematically, the velocity autocorrelation is defined as
 \begin{equation}
-    A(t) = \ev{\frac{\vec{v}(t)\cdot\vec{v}(0)}{\vec{v}(0)\cdot\vec{v}(0)}}
-         = \frac{1}{N} \sum_i \frac{\vec{v}_i(t)\cdot\vec{v}_i(0)}{\vec{v}_i(0)\cdot\vec{v}_i(0)},\label{eq:vacf}
+    A(t) = \frac{\ev{\vec{v}(t)\cdot\vec{v}(0)}}{\ev{\vec{v}(0)\cdot\vec{v}(0)}}
+         = \frac{1}{N}  \frac{\sum_i \vec{v}_i(t)\cdot\vec{v}_i(0)}{\sum_i \vec{v}_i(0)\cdot\vec{v}_i(0)},\label{eq:vacf}
 \end{equation}
 where the sum runs over all atoms.
 
