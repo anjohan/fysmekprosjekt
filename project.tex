@@ -370,10 +370,10 @@ v0 = np.random.normal(0, sqrt(T), size=(N,3))
 \subsection{Velocity autocorrelation and diffusion coefficient (optional)}
 The velocity autocorrelation, denoted \(A(t)\), is a measure of how similar the distribution of velocities is to the initial distribution. It is shown in figure 4 of~\cite{Rahman_1964}. \(A(t=0)=1\), since the velocity distribution at \(t=0\) \emph{is} the initial distribution, while \(A(t)\) decreases rapidly for \(t>0\) as the atoms collide with each other and the velocities become less and less similar to the initial distribution.
 
-Mathematically, the velocity autocorrelation is defined as
+Mathematically, the (normalised) velocity autocorrelation is defined as
 \begin{equation}
     A(t) = \frac{\ev{\vec{v}(t)\cdot\vec{v}(0)}}{\ev{\vec{v}(0)\cdot\vec{v}(0)}}
-         = \frac{1}{N}  \frac{\sum_i \vec{v}_i(t)\cdot\vec{v}_i(0)}{\sum_i \vec{v}_i(0)\cdot\vec{v}_i(0)},\label{eq:vacf}
+         = \frac{\sum_i \vec{v}_i(t)\cdot\vec{v}_i(0)}{\sum_i \vec{v}_i(0)\cdot\vec{v}_i(0)},\label{eq:vacf}
 \end{equation}
 where the sum runs over all atoms.
 
@@ -445,9 +445,6 @@ where \(V\) is the total volume, \(N\) the total number of particles and \(n(r)\
     \item Run  a simulation with as many atoms for as long as you can. Calculate the radial distribution function \(g(r)\), plot the result and compare with figure 2 of~\cite{Rahman_1964}.
 \end{enumerate}
 \lstinputlisting[linerange={rdfstart-rdfend}]{rdf.py}
-
-\subsection{Optional exercises}
-A couple of optional exercises might be added here. First, the pressure is a natural quantity to measure, but was not done by \cite{Rahman_1964}. This calculation also requires the definition of the virial, which might be confusing. Second, the velocity distribution at equilibrium could be found.
 
 
 
